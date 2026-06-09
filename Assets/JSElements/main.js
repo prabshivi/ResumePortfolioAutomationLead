@@ -1,40 +1,45 @@
-// Register GSAP ScrollTrigger plugin
+// Ensure GSAP core plugin layer initializes safely
 gsap.registerPlugin(ScrollTrigger);
 
-// 1. Initial Hero Intro Animations
-gsap.to("#hero-text", { 
-    opacity: 1, 
-    scale: 1, 
-    duration: 1.4, 
-    ease: "power4.out" 
-});
+// 1. Cinema Studio Display Boot Sequences (Phased Entry)
+gsap.timeline()
+    .to("#hero-tag", { 
+        opacity: 1, 
+        y: 0, 
+        duration: 1, 
+        ease: "power3.out" 
+    })
+    .to("#hero-text", { 
+        opacity: 1, 
+        scale: 1, 
+        duration: 1.4, 
+        ease: "power4.out" 
+    }, "-=0.7")
+    .to("#hero-subtext", { 
+        opacity: 1, 
+        duration: 1.2, 
+        ease: "power3.out" 
+    }, "-=0.9");
 
-gsap.to("#hero-subtext", { 
-    opacity: 1, 
-    duration: 1.2, 
-    delay: 0.5, 
-    ease: "power3.out" 
-});
-
-// 2. Timeline Dynamic Scrollytelling Setup
+// 2. Continuous Viewport Tracking Scrollytelling Mechanics
 const slides = gsap.utils.toArray(".exp-slide");
-const timeline = gsap.timeline({
+const engineTimeline = gsap.timeline({
     scrollTrigger: {
         trigger: "#experience",
         start: "top top",
         end: "bottom bottom",
-        scrub: 1, // Smoothly ties scrolling mechanics directly to page scrollbars
+        scrub: 1, // Smooth interpolation linked straight to track positioning
     }
 });
 
-// Programmatic calculation loop to fade slides seamlessly during scrolling
+// Structural calculate pass managing fading timelines elegantly
 slides.forEach((slide, index) => {
     if (index === 0) {
-        // Keeps the initial placeholder header stable before transitioning out
-        timeline.to(slide, { opacity: 0, duration: 1, delay: 1 });
+        // Holds entry banner view stable briefly before dimming out
+        engineTimeline.to(slide, { opacity: 0, scale: 0.95, duration: 1, delay: 1 });
     } else {
-        // Transitions new slides up, pauses for reading view, then steps out cleanly
-        timeline.to(slide, { opacity: 1, duration: 1 })
-                .to(slide, { opacity: 0, duration: 1 }, "+=1");
+        // Moves item into crisp view perspective, locks it, then steps it out
+        engineTimeline.to(slide, { opacity: 1, scale: 1, duration: 1 })
+                      .to(slide, { opacity: 0, scale: 0.95, duration: 1 }, "+=1.2");
     }
 });
