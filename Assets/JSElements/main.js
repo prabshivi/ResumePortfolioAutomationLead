@@ -61,18 +61,23 @@ window.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// 3. Scroll-Reactive Doodle Animation Engine
-    gsap.to("#scrolling-doodle", {
-        scrollTrigger: {
-            trigger: "body",       // Tracks scroll distance across the whole page
-            start: "top top",      // Animation starts at the very peak of the site
-            end: "bottom bottom",  // Animation reaches 100% at the footer
-            scrub: 0.5,            // Smooth catching up delay (0.5 seconds) for micro-fluidity
-        },
-        rotation: 360,             // Smoothly spins the doodle in a full circle as you go top-to-bottom
-        scale: 1.2,                // Gradually expands the doodle size slightly by the time they reach the end
-        transformOrigin: "center center"
-    });
+// --- SCROLL DOODLE ANIMATION ENGINE ---
+if (document.getElementById("scroll-doodle")) {
+  gsap.registerPlugin(ScrollTrigger);
+
+  // Link Zack's rotation and scaling to your scrollbar progress
+  gsap.to("#scroll-doodle", {
+    scrollTrigger: {
+      trigger: "body",          // Tracks scrolling across your entire site layout
+      start: "top top",
+      end: "bottom bottom",
+      scrub: 1                  // Connects the animation smoothly to your mouse wheel
+    },
+    rotation: 360,              // Rotates beautifully in a circle as you scroll down
+    scale: 1.15,                // Gives a subtle breathing zoom effect near your footer
+    transformOrigin: "center center"
+  });
+}
 
     // Optional: Make the doodle bounce playfully on every wheel tick
     window.addEventListener("wheel", (e) => {
