@@ -20,38 +20,45 @@
     <script defer src="https://cdn.vercel-insights.com/v1/script.js"></script>
 </head>
 <body class="bg-[#f5f5f7] select-none text-[#1d1d1f]">
+<body>
 
-    <!-- Global Premium Light Glass Navigation Bar -->
-    <nav class="fixed top-0 w-full z-50 bg-[#ffffff]/70 backdrop-blur-xl border-b border-black/5 h-12 flex items-center justify-between px-4 md:px-6 text-xs font-normal tracking-wide text-[#1d1d1f]/80">
-        <div class="font-semibold text-black tracking-tight cursor-pointer" id="nav-logo">S.PRABHAKAR</div>
-        <!-- Scrollable links container on tiny screens -->
-        <div class="flex space-x-4 md:space-x-6 font-medium overflow-x-auto no-scrollbar max-w-[70%] py-1">
-            <a href="#hero" class="hover:text-[#007aff] transition-colors duration-300 whitespace-nowrap">Overview</a>
-            <a href="#experience" class="hover:text-[#007aff] transition-colors duration-300 whitespace-nowrap">Experience</a>
-            <a href="#specs" class="hover:text-[#007aff] transition-colors duration-300 whitespace-nowrap">Specs</a>
-            <a href="https://linkedin.com/in/shivi-prabhakar" target="_blank" class="hover:text-[#007aff] transition-colors duration-300 whitespace-nowrap">Connect ↗</a>
-        </div>
-    </nav>
+    <!-- Hero Section -->
+    <section id="hero">
+        <h1>Shivi Prabhakar</h1>
+        <h2>Systems Architect & Quality Engineering Lead</h2>
+        <p>
+            I build <strong>AI-integrated, self-healing automation frameworks</strong> from the ground up. 
+            With a 10-year track record, I bridge the gap between complex enterprise requirements 
+            and high-velocity delivery by leading high-performance engineering teams.
+        </p>
+        <a href="#experience" class="cta-button">View My Leadership Impact</a>
+    </section>
 
-    <!-- SECTION 1: Bright Studio Hero with Abstract Tech Overlay -->
-    <section id="hero" class="h-screen w-full flex flex-col justify-center items-center text-center px-6 sticky top-0 overflow-hidden bg-white">
-        <!-- Abstract Tech Backdrop Graphic -->
-        <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop')] bg-cover bg-center opacity-15 mix-blend-multiply z-0"></div>
-        <div class="absolute top-[15%] w-[300px] sm:w-[700px] h-[300px] bg-gradient-to-tr from-sky-300/30 to-indigo-200/40 rounded-full blur-[80px] sm:blur-[120px] z-0 animate-pulse-slow"></div>
+    <!-- Professional Focus Section -->
+    <section id="tech-stack">
+        <h3>Engineering Arsenal</h3>
+        <ul>
+            <li><strong>AI & Automation Strategy:</strong> Leveraging AI for predictive test analytics, automated script maintenance, and intelligent test generation to reduce technical debt.</li>
+            <li><strong>Core Frameworks:</strong> Architected enterprise-grade solutions using <strong>TOSCA</strong>, Playwright, Selenium, and Cypress.</li>
+            <li><strong>Leadership & Scaling:</strong> Mentoring and managing a high-performing team of 10+, driving quality culture, and streamlining CI/CD pipelines.</li>
+        </ul>
+    </section>
 
-        <div class="z-10 max-w-4xl px-2">
-            <span id="hero-tag" class="text-[10px] sm:text-xs uppercase tracking-[0.25em] bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent font-bold mb-4 block opacity-0 transform translate-y-4">
-                Systems Engineer & Quality Architect
-            </span>
-            <h1 id="hero-text" class="text-4xl sm:text-6xl md:text-8xl font-bold tracking-tight bg-gradient-to-b from-[#1d1d1f] via-[#2d2d2f] to-[#86868b] bg-clip-text text-transparent transform scale-105 opacity-0">
-                Shivi Prabhakar
-            </h1>
-            <p id="hero-subtext" class="text-base sm:text-xl md:text-2xl text-[#515154] mt-6 max-w-3xl mx-auto opacity-0 font-light leading-relaxed">
-                QA Automation Development Lead with a <span class="text-blue-600 font-semibold">10-year track record</span> engineering robust, high-velocity testing frameworks for cross-platform enterprise web applications.
-            </p>
+    <!-- Leadership/Experience Section -->
+    <section id="experience">
+        <h3>Engineering Leadership</h3>
+        <div class="card">
+            <h4>QA Automation Development Lead</h4>
+            <p>Managing a team of 10, I focus on transforming manual-heavy QA departments into high-velocity, automated engines. My approach centers on:</p>
+            <ul>
+                <li>Implementing robust, scalable automation patterns that ensure cross-platform consistency.</li>
+                <li>Integrating modern AI-driven tooling to accelerate test authoring and improve stability.</li>
+                <li>Translating complex business needs into automated quality gates that enable faster releases.</li>
+            </ul>
         </div>
     </section>
 
+    
     <!-- SECTION 2: Pinned Scrollytelling Timeline (Fluid Mobile Scaling) -->
     <section id="experience" class="relative min-h-[500vh] bg-[#f5f5f7] z-10 border-t border-black/5">
         <div class="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden px-4 sm:px-6 bg-[radial-gradient(circle_at_80%_20%,#e0f2fe_0%,#f5f5f7_70%)]">
