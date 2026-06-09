@@ -1,3 +1,7 @@
+/* ==========================================================================
+   Shivi Prabhakar - Integrated Base Stylesheet
+   ========================================================================== */
+
 /* Core Styling Variables and Overrides */
 body {
     -webkit-font-smoothing: antialiased;
@@ -7,6 +11,9 @@ body {
 /* Custom transitions for the Bento boxes to feel soft and reactive */
 .bento-box {
     transform: translateY(0);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
+                border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
+                box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .bento-box:hover {
@@ -18,4 +25,19 @@ body {
 /* Timeline specific visibility resets */
 .timeline-slide {
     will-change: transform, opacity;
+}
+
+/* Navigation backdrop styling overrides */
+.glass-nav {
+    background-color: rgba(245, 245, 247, 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+
+/* 3D Canvas viewport constraints */
+#canvas3d {
+    width: 100%;
+    height: 100%;
+    display: block;
+    outline: none;
 }
