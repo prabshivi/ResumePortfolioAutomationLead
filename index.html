@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="bg-[#000000] text-[#f5f5f7] font-sans antialiased overflow-x-hidden scroll-smooth">
+<html lang="en" class="bg-[#f5f5f7] text-[#1d1d1f] font-sans antialiased overflow-x-hidden scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,99 +13,100 @@
     <!-- Link to your exact CSSElements folder layout -->
     <link rel="stylesheet" href="Assets/CSSElements/style.css">
 </head>
-<body class="bg-black select-none">
+<body class="bg-[#f5f5f7] select-none text-[#1d1d1f]">
 
-    <!-- Global Glassmorphic Navigation Bar -->
-    <nav class="fixed top-0 w-full z-50 bg-[#161617]/70 backdrop-blur-xl border-b border-white/5 h-12 flex items-center justify-between px-6 text-xs font-light tracking-wide text-[#f5f5f7]/80">
-        <div class="font-semibold text-white tracking-tight cursor-pointer">S.PRABHAKAR</div>
-        <div class="flex space-x-6">
-            <a href="#hero" class="hover:text-white transition-colors duration-300">Overview</a>
-            <a href="#experience" class="hover:text-white transition-colors duration-300">Experience</a>
-            <a href="#specs" class="hover:text-white transition-colors duration-300">Specs</a>
-            <a href="https://linkedin.com/in/shivi-prabhakar" target="_blank" class="hover:text-white transition-colors duration-300">Connect ↗</a>
+    <!-- Global Premium Light Glass Navigation Bar -->
+    <nav class="fixed top-0 w-full z-50 bg-[#ffffff]/70 backdrop-blur-xl border-b border-black/5 h-12 flex items-center justify-between px-6 text-xs font-normal tracking-wide text-[#1d1d1f]/80">
+        <div class="font-semibold text-black tracking-tight cursor-pointer">S.PRABHAKAR</div>
+        <div class="flex space-x-6 font-medium">
+            <a href="#hero" class="hover:text-[#007aff] transition-colors duration-300">Overview</a>
+            <a href="#experience" class="hover:text-[#007aff] transition-colors duration-300">Experience</a>
+            <a href="#specs" class="hover:text-[#007aff] transition-colors duration-300">Specs</a>
+            <a href="https://linkedin.com/in/shivi-prabhakar" target="_blank" class="hover:text-[#007aff] transition-colors duration-300">Connect ↗</a>
         </div>
     </nav>
 
-    <!-- SECTION 1: Dynamic Studio Display Hero Reveal -->
-    <section id="hero" class="h-screen w-full flex flex-col justify-center items-center text-center px-4 sticky top-0 overflow-hidden">
-        <!-- Dynamic Pro Display Gradient Background Overlay -->
-        <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,#1a103c_0%,#05021a_50%,#000000_100%)] opacity-80 z-0"></div>
-        <div class="absolute top-[20%] w-[600px] h-[300px] bg-purple-600/10 rounded-full blur-[140px] z-0 animate-pulse-slow"></div>
+    <!-- SECTION 1: Bright Studio Hero with Abstract Tech Overlay -->
+    <section id="hero" class="h-screen w-full flex flex-col justify-center items-center text-center px-4 sticky top-0 overflow-hidden bg-white">
+        <!-- Premium Abstract Code Matrix / Network Backdrop Graphic -->
+        <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop')] bg-cover bg-center opacity-15 mix-blend-multiply z-0"></div>
+        <!-- Happy, vibrant sun-kissed ambient gradient radial glow -->
+        <div class="absolute top-[10%] w-[700px] h-[400px] bg-gradient-to-tr from-sky-300/30 to-indigo-200/40 rounded-full blur-[120px] z-0 animate-pulse-slow"></div>
 
         <div class="z-10 max-w-4xl px-4">
-            <span id="hero-tag" class="text-xs uppercase tracking-[0.25em] bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent font-semibold mb-4 block opacity-0 transform translate-y-4">
+            <span id="hero-tag" class="text-xs uppercase tracking-[0.25em] bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent font-bold mb-4 block opacity-0 transform translate-y-4">
                 Systems Engineer & Quality Architect
             </span>
-            <h1 id="hero-text" class="text-5xl md:text-8xl font-bold tracking-tight bg-gradient-to-b from-white via-[#f5f5f7] to-[#86868b] bg-clip-text text-transparent transform scale-105 opacity-0">
+            <h1 id="hero-text" class="text-5xl md:text-8xl font-bold tracking-tight bg-gradient-to-b from-[#1d1d1f] via-[#2d2d2f] to-[#86868b] bg-clip-text text-transparent transform scale-105 opacity-0">
                 Shivi Prabhakar
             </h1>
-            <p id="hero-subtext" class="text-lg md:text-2xl text-[#86868b] mt-6 max-w-3xl mx-auto opacity-0 font-light leading-relaxed">
-                QA Automation Development Lead with a <span class="text-white font-medium">10-year track record</span> engineering robust, high-velocity testing frameworks for cross-platform enterprise web applications[cite: 1].
+            <p id="hero-subtext" class="text-lg md:text-2xl text-[#515154] mt-6 max-w-3xl mx-auto opacity-0 font-light leading-relaxed">
+                QA Automation Development Lead with a <span class="text-blue-600 font-semibold">10-year track record</span> engineering robust, high-velocity testing frameworks for cross-platform enterprise web applications[cite: 1].
             </p>
         </div>
     </section>
 
-    <!-- SECTION 2: Interactive Experience Timeline (Pinned Scrollytelling Canvas) -->
-    <section id="experience" class="relative min-h-[500vh] bg-black z-10 border-t border-white/5">
-        <!-- Dynamic Gradient Layer that changes feel as you scroll -->
-        <div class="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden px-6 bg-[radial-gradient(circle_at_80%_20%,#0d1730_0%,#000000_70%)]">
-            <div class="absolute bottom-[10%] left-[10%] w-[400px] h-[400px] bg-blue-900/10 rounded-full blur-[120px] pointer-events-none"></div>
+    <!-- SECTION 2: Pinned Scrollytelling Timeline (Vibrant, Clean Studio Canvas) -->
+    <section id="experience" class="relative min-h-[500vh] bg-[#f5f5f7] z-10 border-t border-black/5">
+        <!-- Soft, energetic sky-blue radial background that moves with you -->
+        <div class="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden px-6 bg-[radial-gradient(circle_at_80%_20%,#e0f2fe_0%,#f5f5f7_70%)]">
+            <div class="absolute bottom-[10%] left-[10%] w-[500px] h-[500px] bg-indigo-100/50 rounded-full blur-[140px] pointer-events-none"></div>
             
-            <!-- Slide 1: Professional Narrative Intro -->
+            <!-- Slide 1: General Core Overview Narrative -->
             <div class="exp-slide absolute flex flex-col items-center text-center max-w-4xl">
-                <span class="text-xs uppercase tracking-[0.2em] text-[#007aff] font-semibold mb-3">Professional Profile</span>
-                <h2 class="text-4xl md:text-7xl font-bold tracking-tight text-white mb-6">Built for Scale.<br>Engineered for Trust.</h2>
-                <p class="text-lg md:text-xl text-[#86868b] max-w-2xl font-light leading-relaxed">
+                <span class="text-xs uppercase tracking-[0.2em] text-[#007aff] font-bold mb-3">Professional Profile</span>
+                <h2 class="text-4xl md:text-7xl font-bold tracking-tight text-[#1d1d1f] mb-6">Built for Scale.<br>Engineered for Trust.</h2>
+                <p class="text-lg md:text-xl text-[#515154] max-w-2xl font-light leading-relaxed">
                     Detail-oriented architect specializing in cross-browser test suites, native mobile apps, and deep backend web service parsing[cite: 1]. Dedicated to driving strict software analysis standards while leading agile dev teams[cite: 1].
                 </p>
             </div>
 
             <!-- Slide 2: Active Leadership - Empire Life -->
             <div class="exp-slide absolute opacity-0 flex flex-col items-center text-center max-w-4xl">
-                <span class="text-xs uppercase tracking-widest text-[#34c759] font-mono font-semibold mb-2">Dec 2023 – Present</span>
-                <h3 class="text-xl md:text-2xl text-[#86868b] font-light">QA Automation Development Lead</h3>
-                <h4 class="text-4xl md:text-6xl font-bold text-white tracking-tight mt-1 mb-6">Empire Life</h4>
-                <p class="text-base md:text-lg text-[#ecf0f1] font-light max-w-3xl leading-relaxed">
+                <span class="text-xs uppercase tracking-widest text-emerald-600 font-mono font-bold mb-2">Dec 2023 – Present</span>
+                <h3 class="text-xl md:text-2xl text-[#515154] font-light">QA Automation Development Lead</h3>
+                <h4 class="text-4xl md:text-6xl font-bold text-[#1d1d1f] tracking-tight mt-1 mb-6">Empire Life</h4>
+                <p class="text-base md:text-lg text-[#333336] font-normal max-w-3xl leading-relaxed">
                     Directing a structural team of ten Quality Assurance Testers across the core Retail Automation Insurance Sector[cite: 1]. Architected automated frameworks using Selenium and Cypress while executing AI-accelerated validations and custom script workflows using Google Gemini and Testim.io to optimize sprint regressions[cite: 1].
                 </p>
-                <p class="text-xs font-mono text-[#34c759] bg-[#34c759]/5 px-4 py-1.5 rounded-full border border-[#34c759]/20 mt-4">
+                <p class="text-xs font-mono text-emerald-700 bg-emerald-50 px-4 py-1.5 rounded-full border border-emerald-200 mt-4 shadow-sm">
                     [ Selenium | Cypress | Testim.io | GitHub Actions CI/CD | PowerBI ]
                 </p>
             </div>
 
             <!-- Slide 3: Enterprise Engineering - RBC -->
             <div class="exp-slide absolute opacity-0 flex flex-col items-center text-center max-w-4xl">
-                <span class="text-xs uppercase tracking-widest text-[#af52de] font-mono font-semibold mb-2">Aug 2022 – Dec 2023</span>
-                <h3 class="text-xl md:text-2xl text-[#86868b] font-light">Lead SDET</h3>
-                <h4 class="text-4xl md:text-6xl font-bold text-white tracking-tight mt-1mb-6">Royal Bank of Canada</h4>
-                <p class="text-base md:text-lg text-[#ecf0f1] font-light max-w-3xl leading-relaxed">
+                <span class="text-xs uppercase tracking-widest text-purple-600 font-mono font-bold mb-2">Aug 2022 – Dec 2023</span>
+                <h3 class="text-xl md:text-2xl text-[#515154] font-light">Lead SDET</h3>
+                <h4 class="text-4xl md:text-6xl font-bold text-[#1d1d1f] tracking-tight mt-1 mb-6">Royal Bank of Canada</h4>
+                <p class="text-base md:text-lg text-[#333336] font-normal max-w-3xl leading-relaxed">
                     Orchestrated comprehensive service-level verification layers for the RBC Mobile app (Transfers, Wealth Management, Fraud Validation loops)[cite: 1]. Increased regression test intensity and script depth by 40% using specialized automated frameworks alongside TestComplete and Tricentis ReadyAPI infrastructure loops[cite: 1].
                 </p>
-                <p class="text-xs font-mono text-[#af52de] bg-[#af52de]/5 px-4 py-1.5 rounded-full border border-[#af52de]/20 mt-4">
+                <p class="text-xs font-mono text-purple-700 bg-purple-50 px-4 py-1.5 rounded-full border border-purple-200 mt-4 shadow-sm">
                     [ Ready API | TestComplete | DynaTrace Traffic Management | Postman ]
                 </p>
             </div>
 
-            <!-- Slide 4: Full Historical Track Record -->
+            <!-- Slide 4: Full Chronology History Cards -->
             <div class="exp-slide absolute opacity-0 flex flex-col items-center text-center w-full max-w-4xl">
-                <span class="text-xs uppercase tracking-[0.2em] text-[#ff9500] font-semibold mb-4">Enterprise Chronology</span>
-                <h4 class="text-3xl md:text-5xl font-bold text-white tracking-tight mb-8">Structural Timeline</h4>
+                <span class="text-xs uppercase tracking-[0.2em] text-amber-600 font-bold mb-4">Enterprise Chronology</span>
+                <h4 class="text-3xl md:text-5xl font-bold text-[#1d1d1f] tracking-tight mb-8">Structural Timeline</h4>
                 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-left w-full px-4">
-                    <div class="bg-white/[0.02] p-6 rounded-2xl border border-white/5 shadow-2xl backdrop-blur-xl">
-                        <span class="text-xs font-mono text-[#ff9500]">2019</span>
-                        <h5 class="text-base font-semibold text-white mt-1">Workjam Inc.</h5>
-                        <p class="text-xs text-[#86868b] mt-2 leading-relaxed">Senior QA Developer. Constructed REST API test patterns hooked cleanly into structural BitBucket loops[cite: 1].</p>
+                    <div class="bg-white p-6 rounded-2xl border border-black/5 shadow-md">
+                        <span class="text-xs font-mono font-bold text-amber-600">2019</span>
+                        <h5 class="text-base font-bold text-[#1d1d1f] mt-1">Workjam Inc.</h5>
+                        <p class="text-xs text-[#515154] mt-2 leading-relaxed">Senior QA Developer. Constructed REST API test patterns hooked cleanly into structural BitBucket loops[cite: 1].</p>
                     </div>
-                    <div class="bg-white/[0.02] p-6 rounded-2xl border border-white/5 shadow-2xl backdrop-blur-xl">
-                        <span class="text-xs font-mono text-cyan-400">2018 - 2019</span>
-                        <h5 class="text-base font-semibold text-white mt-1">Broadsign Ayuda</h5>
-                        <p class="text-xs text-[#86868b] mt-2 leading-relaxed">Performance Testing Head. Engineered heavy load scenarios via Apache JMeter and managed cloud matrix executions with Sauce Labs[cite: 1].</p>
+                    <div class="bg-white p-6 rounded-2xl border border-black/5 shadow-md">
+                        <span class="text-xs font-mono font-bold text-sky-600">2018 - 2019</span>
+                        <h5 class="text-base font-bold text-[#1d1d1f] mt-1">Broadsign Ayuda</h5>
+                        <p class="text-xs text-[#515154] mt-2 leading-relaxed">Performance Testing Head. Engineered heavy load scenarios via Apache JMeter and managed cloud matrix executions with Sauce Labs[cite: 1].</p>
                     </div>
-                    <div class="bg-white/[0.02] p-6 rounded-2xl border border-white/5 shadow-2xl backdrop-blur-xl">
-                        <span class="text-xs font-mono text-[#34c759]">2015 - 2018</span>
-                        <h5 class="text-base font-semibold text-white mt-1">Nour Transport</h5>
-                        <p class="text-xs text-[#86868b] mt-2 leading-relaxed">Automation Dev. Formulated functional validation models using core Java configurations and deep relational database queries[cite: 1].</p>
+                    <div class="bg-white p-6 rounded-2xl border border-black/5 shadow-md">
+                        <span class="text-xs font-mono font-bold text-emerald-600">2015 - 2018</span>
+                        <h5 class="text-base font-bold text-[#1d1d1f] mt-1">Nour Transport</h5>
+                        <p class="text-xs text-[#515154] mt-2 leading-relaxed">Automation Dev. Formulated functional validation models using core Java configurations and deep relational database queries[cite: 1].</p>
                     </div>
                 </div>
             </div>
@@ -113,59 +114,59 @@
         </div>
     </section>
 
-    <!-- SECTION 3: Premium Bento Grid Hardware Tech Specs -->
-    <section id="specs" class="relative min-h-screen bg-[#0a0a0c] text-white py-24 px-6 z-20 border-t border-white/5">
-        <!-- Complex Mesh Gradient to create realism background depth -->
-        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,#111827_0%,#000000_60%)] pointer-events-none z-0"></div>
+    <!-- SECTION 3: Premium Light Bento Grid (System Architecture Visual Backdrop) -->
+    <section id="specs" class="relative min-h-screen bg-[#f5f5f7] text-[#1d1d1f] py-24 px-6 z-20 border-t border-black/5">
+        <!-- Blueprint/System Infrastructure Abstract Background Image -->
+        <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=2670&auto=format&fit=crop')] bg-cover bg-center opacity-5 mix-blend-overlay pointer-events-none z-0"></div>
         
         <div class="max-w-5xl mx-auto relative z-10">
-            <span class="text-xs uppercase tracking-[0.3em] text-[#86868b] font-semibold block text-center mb-2">Technical Matrix</span>
-            <h2 class="text-4xl md:text-6xl font-bold tracking-tight mb-16 text-center bg-gradient-to-b from-white to-[#86868b] bg-clip-text text-transparent">Engineered Specs.</h2>
+            <span class="text-xs uppercase tracking-[0.3em] text-[#86868b] font-bold block text-center mb-2">Technical Matrix</span>
+            <h2 class="text-4xl md:text-6xl font-bold tracking-tight mb-16 text-center bg-gradient-to-b from-[#1d1d1f] to-[#86868b] bg-clip-text text-transparent">Engineered Specs.</h2>
             
-            <!-- Dynamic Realism Bento Box Grid -->
+            <!-- Dynamic Crisp Light Bento Box Grid -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 
-                <!-- Card 1: Main Core Stacks -->
+                <!-- Card 1 -->
                 <div class="md:col-span-2 glass-card p-8 rounded-[28px] flex flex-col justify-between h-85 relative overflow-hidden group">
-                    <div class="absolute inset-0 bg-gradient-to-br from-red-500/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    <div class="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-transparent opacity-100"></div>
                     <div>
-                        <span class="text-xs font-mono font-semibold uppercase tracking-wider text-[#ff3b30]">Automation Foundations</span>
-                        <h3 class="text-3xl font-bold mt-2 text-white">Selenium, Cypress & Testim</h3>
+                        <span class="text-xs font-mono font-bold uppercase tracking-wider text-[#ff3b30]">Automation Foundations</span>
+                        <h3 class="text-3xl font-bold mt-2 text-[#1d1d1f]">Selenium, Cypress & Testim</h3>
                     </div>
-                    <p class="text-[#86868b] text-sm leading-relaxed mt-4">
+                    <p class="text-[#515154] text-sm leading-relaxed mt-4">
                         Building optimized, reliable programmatic testing architectures[cite: 1]. Merging enterprise framework builds with scalable, cloud-synchronized modern execution runs[cite: 1].
                     </p>
                 </div>
 
-                <!-- Card 2: Core Compilers -->
+                <!-- Card 2 -->
                 <div class="glass-card p-8 rounded-[28px] flex flex-col justify-between h-80 group">
                     <div>
-                        <span class="text-xs font-mono font-semibold uppercase tracking-wider text-[#34c759]">Language Core</span>
-                        <h3 class="text-3xl font-bold mt-2 text-white">Java & SQL</h3>
+                        <span class="text-xs font-mono font-bold uppercase tracking-wider text-emerald-600">Language Core</span>
+                        <h3 class="text-3xl font-bold mt-2 text-[#1d1d1f]">Java & SQL</h3>
                     </div>
-                    <p class="text-[#86868b] text-sm leading-relaxed">
+                    <p class="text-[#515154] text-sm leading-relaxed">
                         Data serialization layer routines built around relational schema sets, deep query logic, and Cassandra (CCM) clusters[cite: 1].
                     </p>
                 </div>
 
-                <!-- Card 3: Performance Layers -->
+                <!-- Card 3 -->
                 <div class="glass-card p-8 rounded-[28px] flex flex-col justify-between h-80 group">
                     <div>
-                        <span class="text-xs font-mono font-semibold uppercase tracking-wider text-[#af52de]">Stress Diagnostics</span>
-                        <h3 class="text-2xl font-bold mt-2 text-white">JMeter & Appium</h3>
+                        <span class="text-xs font-mono font-bold uppercase tracking-wider text-purple-600">Stress Diagnostics</span>
+                        <h3 class="text-2xl font-bold mt-2 text-[#1d1d1f]">JMeter & Appium</h3>
                     </div>
-                    <p class="text-[#86868b] text-sm leading-relaxed">
+                    <p class="text-[#515154] text-sm leading-relaxed">
                         Simulating deep multi-threaded traffic conditions alongside cross-device validation loops across localized hardware matrices[cite: 1].
                     </p>
                 </div>
 
-                <!-- Card 4: Orchestration Operations -->
+                <!-- Card 4 -->
                 <div class="md:col-span-2 glass-card p-8 rounded-[28px] flex flex-col justify-between h-80 group">
                     <div>
-                        <span class="text-xs font-mono font-semibold uppercase tracking-wider text-[#007aff]">Release Architecture</span>
-                        <h3 class="text-3xl font-bold mt-2 text-white">GitHub Actions & DevOps</h3>
+                        <span class="text-xs font-mono font-bold uppercase tracking-wider text-[#007aff]">Release Architecture</span>
+                        <h3 class="text-3xl font-bold mt-2 text-[#1d1d1f]">GitHub Actions & DevOps</h3>
                     </div>
-                    <p class="text-[#86868b] text-sm leading-relaxed">
+                    <p class="text-[#515154] text-sm leading-relaxed">
                         Orchestrating nightly cron runners, pipeline compilation configurations, and formatting clear QA quality analytical metrics straight into PowerBI dashboards[cite: 1].
                     </p>
                 </div>
@@ -173,19 +174,19 @@
             </div>
 
             <!-- Education and Certifications Segment Footer -->
-            <div class="mt-24 border-t border-white/5 pt-12 grid grid-cols-1 md:grid-cols-2 gap-12 text-sm text-[#86868b]">
-                <div class="bg-white/[0.01] p-6 rounded-2xl border border-white/5">
-                    <h4 class="text-white uppercase font-semibold text-xs tracking-wider mb-4 font-mono text-[#007aff]">Credentials & Certifications</h4>
-                    <ul class="space-y-3 font-light">
-                        <li><strong class="text-white font-normal">ISTQB</strong> — Certified Tester[cite: 1]</li>
-                        <li><strong class="text-white font-normal">Scrum Master</strong> — Agile Delivery Specialist[cite: 1]</li>
+            <div class="mt-24 border-t border-black/10 pt-12 grid grid-cols-1 md:grid-cols-2 gap-12 text-sm text-[#515154]">
+                <div class="bg-white p-6 rounded-2xl border border-black/5 shadow-sm">
+                    <h4 class="text-[#007aff] uppercase font-bold text-xs tracking-wider mb-4 font-mono">Credentials & Certifications</h4>
+                    <ul class="space-y-3 font-normal text-[#1d1d1f]">
+                        <li><strong class="font-bold">ISTQB</strong> — Certified Tester[cite: 1]</li>
+                        <li><strong class="font-bold">Scrum Master</strong> — Agile Delivery Specialist[cite: 1]</li>
                     </ul>
                 </div>
-                <div class="bg-white/[0.01] p-6 rounded-2xl border border-white/5">
-                    <h4 class="text-white uppercase font-semibold text-xs tracking-wider mb-4 font-mono text-[#34c759]">Academic Foundations</h4>
-                    <ul class="space-y-3 font-light">
-                        <li><strong class="text-white font-normal">Post Graduate Diploma: Mobile Application Dev</strong> — Cégep de la Gaspésie[cite: 1]</li>
-                        <li><strong class="text-white font-normal">Bachelor of Technology: Electronics & Communication</strong> — VIT (3.88 GPA)[cite: 1]</li>
+                <div class="bg-white p-6 rounded-2xl border border-black/5 shadow-sm">
+                    <h4 class="text-emerald-600 uppercase font-bold text-xs tracking-wider mb-4 font-mono">Academic Foundations</h4>
+                    <ul class="space-y-3 font-normal text-[#1d1d1f]">
+                        <li><strong class="font-bold">Post Graduate Diploma: Mobile Application Dev</strong> — Cégep de la Gaspésie[cite: 1]</li>
+                        <li><strong class="font-bold">Bachelor of Technology: Electronics & Communication</strong> — VIT (3.88 GPA)[cite: 1]</li>
                     </ul>
                 </div>
             </div>

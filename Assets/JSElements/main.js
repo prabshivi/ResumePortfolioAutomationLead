@@ -1,7 +1,7 @@
 // Ensure GSAP core plugin layer initializes safely
 gsap.registerPlugin(ScrollTrigger);
 
-// 1. Cinema Studio Display Boot Sequences (Phased Entry)
+// 1. Light Mode Display Boot Sequences (Phased Entry Animation)
 gsap.timeline()
     .to("#hero-tag", { 
         opacity: 1, 
@@ -28,11 +28,11 @@ const engineTimeline = gsap.timeline({
         trigger: "#experience",
         start: "top top",
         end: "bottom bottom",
-        scrub: 1, // Smooth interpolation linked straight to track positioning
+        scrub: 1, // Smooth interpolation linked straight to scroll position
     }
 });
 
-// Structural calculate pass managing fading timelines elegantly
+// Structural pass managing clean alpha fading timelines across scrolls
 slides.forEach((slide, index) => {
     if (index === 0) {
         // Holds entry banner view stable briefly before dimming out
