@@ -1,43 +1,40 @@
-/* ==========================================================================
-   Shivi Prabhakar - Integrated Base Stylesheet
-   ========================================================================== */
+/* ========================================================================= */
+/* PRODUCTION VIDEO LAYOUT OVERRIDES                                         */
+/* ========================================================================= */
 
-/* Core Styling Variables and Overrides */
-body {
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #000000;
 }
 
-/* Custom transitions for the Bento boxes to feel soft and reactive */
-.bento-box {
-    transform: translateY(0);
-    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
-                border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
-                box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+/* Hardware acceleration wrapper.
+  Forces browser layout engines (Blink/WebKit) to offload the scaling video 
+  calculations onto the GPU, minimizing main-thread UI jank.
+*/
+#bg-video {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  min-width: 100%;
+  min-height: 100%;
+  object-fit: cover;
+  transform: translate3d(-50%, -50%, 0);
+  will-change: transform;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
 }
 
-.bento-box:hover {
-    transform: translateY(-4px);
-    border-color: #86868b;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+/* Smooth scrolling baseline for sub-sections */
+html {
+  scroll-behavior: smooth;
 }
 
-/* Timeline specific visibility resets */
-.timeline-slide {
-    will-change: transform, opacity;
-}
-
-/* Navigation backdrop styling overrides */
-.glass-nav {
-    background-color: rgba(245, 245, 247, 0.7);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-}
-
-/* 3D Canvas viewport constraints */
-#canvas3d {
-    width: 100%;
-    height: 100%;
-    display: block;
-    outline: none;
+/* Custom performance rule: disables mouse calculations on purely decorative layers */
+.pointer-events-none {
+  pointer-events: none;
 }
