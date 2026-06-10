@@ -16,7 +16,24 @@ const engineTimeline = gsap.timeline({
         scrub: 1,
     }
 });
+// Ensure GSAP and ScrollTrigger are loaded in your HTML <head>
+const tl = gsap.timeline();
 
+// Step 1: Initial Reveal Animation
+tl.fromTo("#hero-name", 
+  { 
+    opacity: 0, 
+    scale: 1.5, 
+    color: "#ffffff" // Crisp white
+  }, 
+  { 
+    opacity: 1, 
+    scale: 1, 
+    color: "#86868b", // Anodized aluminum grey
+    duration: 2, 
+    ease: "power4.out" 
+  }
+);
 slides.forEach((slide, index) => {
     if (index === 0) {
         engineTimeline.to(slide, { opacity: 0, scale: 0.95, duration: 1, delay: 1 });
