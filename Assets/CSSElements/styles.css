@@ -10,7 +10,7 @@ body {
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.5) 100%);
     border: 1px solid rgba(0, 0, 0, 0.05);
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.02);
-    backdrop-blur: 20px;
+    background-color: 20px;
     -webkit-backdrop-blur: 20px;
     transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
