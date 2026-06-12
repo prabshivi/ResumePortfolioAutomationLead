@@ -130,6 +130,14 @@ function initThree() {
 
     // Dynamic Connections Line Segment Mesh
     connectionGeometry = new THREE.BufferGeometry();
+    
+    // Pre-allocate a single static buffer to avoid GC churn in render loop.
+    // 35 nodes max connections = (35 * 34) / 2 = 595 lines.
+    // 2 vertices per line, 3 coords per vertex = 595 * 2 * 3 = 3570 floats.
+    const maxConnections = 595;
+    const positionArray = new Float32Array(maxConnections * 2 * 3);
+    connectionGeometry.setAttribute('position', new THREE.BufferAttribute(positionArray, 3));
+    
     const lineMat = new THREE.LineBasicMaterial({
         color: 0x4f46e5,
         transparent: true,
@@ -197,7 +205,8 @@ function animate() {
     }
 
     // 3. Float & Connecting Lines recalculation
-    const linePositions = [];
+    const positions = connectionGeometry.attributes.position.array;
+    let lineIndex = 0;
     const maxDist = 2.8;
 
     for (let i = 0; i < nodes.length; i++) {
@@ -215,15 +224,19 @@ function animate() {
         for (let j = i + 1; j < nodes.length; j++) {
             const n2 = nodes[j];
             const dist = n1.position.distanceTo(n2.position);
-            if (dist < maxDist) {
-                linePositions.push(n1.position.x, n1.position.y, n1.position.z);
-                linePositions.push(n2.position.x, n2.position.y, n2.position.z);
+            if (dist < maxDist && lineIndex < positions.length - 6) {
+                positions[lineIndex++] = n1.position.x;
+                positions[lineIndex++] = n1.position.y;
+                positions[lineIndex++] = n1.position.z;
+                positions[lineIndex++] = n2.position.x;
+                positions[lineIndex++] = n2.position.y;
+                positions[lineIndex++] = n2.position.z;
             }
         }
     }
 
-    connectionGeometry.setAttribute('position', new THREE.Float32BufferAttribute(linePositions, 3));
     connectionGeometry.attributes.position.needsUpdate = true;
+    connectionGeometry.setDrawRange(0, lineIndex / 3);
 
     // 4. Sync camera targets (GSAP properties + mouse inertia offset)
     camera.position.x = threeConfig.camX + mouseX * 1.5;
@@ -352,11 +365,17 @@ cards.forEach(card => {
     card.appendChild(glare);
 
     // 2. Add Mousemove Tilt Logic
+    let rect = null;
+    
+    card.addEventListener("mouseenter", () => {
+        rect = card.getBoundingClientRect();
+    });
+
     card.addEventListener("mousemove", (e) => {
         // Accessibility / Performance bypass on small screens
         if (window.innerWidth < 768) return;
+        if (!rect) rect = card.getBoundingClientRect();
 
-        const rect = card.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
 
@@ -379,6 +398,7 @@ cards.forEach(card => {
     card.addEventListener("mouseleave", () => {
         card.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)";
         glare.style.background = "transparent";
+        rect = null;
     });
 });
 
