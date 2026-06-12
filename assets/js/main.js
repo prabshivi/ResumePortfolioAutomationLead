@@ -389,6 +389,11 @@ if (emailCard) {
     emailCard.addEventListener("click", () => {
         const emailAddress = "shivi2010vit@gmail.com";
         navigator.clipboard.writeText(emailAddress).then(() => {
+            // Track in Vercel Analytics if available
+            if (window.va) {
+                window.va('event', 'copy_email');
+            }
+            
             // Success Feedback Animation
             const actionText = document.getElementById("email-action-text");
             const iconContainer = document.getElementById("email-icon-container");
@@ -424,3 +429,26 @@ if (emailCard) {
         });
     });
 }
+
+// -------------------------------------------------------------
+// 6. Connect Section Vercel Analytics Triggers
+// -------------------------------------------------------------
+// Track LinkedIn Profile clicks (navbar and connect section)
+const linkedinLinks = document.querySelectorAll('a[href*="linkedin.com/in/shivi-prabhakar"]');
+linkedinLinks.forEach(link => {
+    link.addEventListener("click", () => {
+        if (window.va) {
+            window.va('event', 'click_linkedin');
+        }
+    });
+});
+
+// Track GitHub Portfolio clicks
+const githubLinks = document.querySelectorAll('a[href*="github.com/prabshivi"]');
+githubLinks.forEach(link => {
+    link.addEventListener("click", () => {
+        if (window.va) {
+            window.va('event', 'click_github');
+        }
+    });
+});
