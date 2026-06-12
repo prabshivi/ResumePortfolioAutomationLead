@@ -380,3 +380,47 @@ cards.forEach(card => {
         glare.style.background = "transparent";
     });
 });
+
+// -------------------------------------------------------------
+// 5. Connect Section Email Clipboard Logic
+// -------------------------------------------------------------
+const emailCard = document.getElementById("email-card");
+if (emailCard) {
+    emailCard.addEventListener("click", () => {
+        const emailAddress = "shivi2010vit@gmail.com";
+        navigator.clipboard.writeText(emailAddress).then(() => {
+            // Success Feedback Animation
+            const actionText = document.getElementById("email-action-text");
+            const iconContainer = document.getElementById("email-icon-container");
+            const emailSvg = document.getElementById("email-svg");
+            
+            if (actionText && iconContainer && emailSvg) {
+                // Change classes for Copied state
+                actionText.innerHTML = "Copied! ✓";
+                actionText.classList.remove("text-emerald-400");
+                actionText.classList.add("text-emerald-300");
+                
+                iconContainer.classList.remove("bg-emerald-400/10");
+                iconContainer.classList.add("bg-emerald-400/20");
+                
+                // SVG check icon replacement
+                emailSvg.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />`;
+                
+                // Reset after 2.5 seconds
+                setTimeout(() => {
+                    actionText.innerHTML = `Copy Email <span class="group-hover:translate-x-1 transition-transform duration-300 ml-1">→</span>`;
+                    actionText.classList.remove("text-emerald-300");
+                    actionText.classList.add("text-emerald-400");
+                    
+                    iconContainer.classList.remove("bg-emerald-400/20");
+                    iconContainer.classList.add("bg-emerald-400/10");
+                    
+                    // Original mail icon
+                    emailSvg.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>`;
+                }, 2500);
+            }
+        }).catch(err => {
+            console.error("Failed to copy text: ", err);
+        });
+    });
+}
