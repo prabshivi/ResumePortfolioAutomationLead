@@ -4,13 +4,14 @@ gsap.registerPlugin(ScrollTrigger);
 // 1. Initial Hero Fade Sequence (Preserving original tween logic)
 // -------------------------------------------------------------
 const heroTl = gsap.timeline();
-heroTl.to("#hero-tag", { opacity: 1, y: 0, duration: 1, ease: "power3.out" })
+heroTl.to("#hero-tag", { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" })
       .fromTo("#hero-text", 
-          { opacity: 0, scale: 1.5 }, 
-          { opacity: 1, scale: 1, duration: 2, ease: "power4.out" }, 
-          "-=0.7"
+          { opacity: 0, scale: 1.2 }, 
+          { opacity: 1, scale: 1, duration: 0.8, ease: "power3.out" }, 
+          "-=0.4"
       )
-      .to("#hero-subtext", { opacity: 1, duration: 1, ease: "power3.out" }, "-=1.4");
+      .to("#hero-subtext", { opacity: 1, duration: 0.6, ease: "power3.out" }, "-=0.5")
+      .to("#hero-ctas", { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, "-=0.4");
 
 // -------------------------------------------------------------
 // 2. Three.js Real-time 3D Realistic Scene Setup
@@ -452,3 +453,13 @@ githubLinks.forEach(link => {
         }
     });
 });
+
+// Track Resume Download clicks
+const resumeBtn = document.getElementById("download-resume-btn");
+if (resumeBtn) {
+    resumeBtn.addEventListener("click", () => {
+        if (window.va) {
+            window.va('event', 'download_resume');
+        }
+    });
+}
