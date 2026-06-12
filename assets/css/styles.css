@@ -1,0 +1,128 @@
+/* --- Base Design System & CSS Variables --- */
+:root {
+    --bg-dark: #070709;
+    --card-bg: rgba(18, 18, 22, 0.45);
+    --card-border: rgba(255, 255, 255, 0.08);
+    --card-border-hover: rgba(255, 255, 255, 0.18);
+    --text-primary: #f5f5f7;
+    --text-secondary: #86868b;
+    --accent-blue: #007aff;
+    --accent-glow: rgba(0, 122, 255, 0.15);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+    background-color: var(--bg-dark);
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+    letter-spacing: -0.015em;
+    background-color: var(--bg-dark);
+    color: var(--text-primary);
+    overflow-x: hidden;
+    min-height: 100vh;
+}
+
+/* --- Three.js Background Canvas Container --- */
+#three-canvas-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* --- Premium 3D Glassmorphic Cards --- */
+.glass-card {
+    position: relative;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    box-shadow: 
+        0 4px 30px rgba(0, 0, 0, 0.4),
+        inset 0 1px 1px rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-blur: 20px;
+    transform-style: preserve-3d;
+    perspective: 1000px;
+    will-change: transform;
+    transition: border-color 0.5s ease, box-shadow 0.5s ease;
+}
+
+/* Glare overlay created dynamically in main.js */
+.card-glare {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    border-radius: inherit;
+    z-index: 10;
+    mix-blend-mode: overlay;
+    transition: opacity 0.3s ease;
+    opacity: 0;
+}
+
+.glass-card:hover .card-glare {
+    opacity: 1;
+}
+
+.glass-card:hover {
+    border-color: var(--card-border-hover);
+    box-shadow: 
+        0 15px 45px -5px rgba(0, 0, 0, 0.6),
+        0 0 25px var(--accent-glow),
+        inset 0 1px 2px rgba(255, 255, 255, 0.1);
+}
+
+/* Ensure inner content has 3D depth */
+.glass-card > * {
+    transform: translateZ(20px);
+}
+
+/* --- Scrollbar customizations --- */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+}
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* --- Animations --- */
+@keyframes pulseSlow {
+    0%, 100% { opacity: 0.2; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(1.05); }
+}
+.animate-pulse-slow {
+    animation: pulseSlow 10s infinite ease-in-out;
+}
+
+/* Timeline slides layout */
+.exp-slide {
+    will-change: opacity, transform;
+}
