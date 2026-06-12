@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="bg-[#f5f5f7] text-[#1d1d1f] font-sans antialiased overflow-x-hidden scroll-smooth">
+<html lang="en" class="bg-[#070709] text-[#f5f5f7] font-sans antialiased overflow-x-hidden scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -9,9 +9,11 @@
     <!-- GSAP for Smooth Fluid Animations -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <!-- Three.js for 3D Real-Time Graphics -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     
     <!-- Link to your exact CSSElements folder layout -->
-    <link rel="stylesheet" href="Assets/CSSElements/style.css">
+    <link rel="stylesheet" href="Assets/CSSElements/styles.css">
     
     <!-- Vercel Web Analytics -->
     <script>
@@ -19,11 +21,14 @@
     </script>
     <script defer src="https://cdn.vercel-insights.com/v1/script.js"></script>
 </head>
-<body class="bg-[#f5f5f7] select-none text-[#1d1d1f]">
+<body class="bg-[#070709] select-none text-[#f5f5f7]">
 
-    <!-- Global Premium Light Glass Navigation Bar -->
-    <nav class="fixed top-0 w-full z-50 bg-[#ffffff]/70 backdrop-blur-xl border-b border-black/5 h-12 flex items-center justify-between px-4 md:px-6 text-xs font-normal tracking-wide text-[#1d1d1f]/80">
-        <div class="font-semibold text-black tracking-tight cursor-pointer" id="nav-logo">S.PRABHAKAR</div>
+    <!-- Fixed 3D Realistic Canvas Background -->
+    <div id="three-canvas-container"></div>
+
+    <!-- Global Premium Dark Glass Navigation Bar -->
+    <nav class="fixed top-0 w-full z-50 bg-[#070709]/70 backdrop-blur-xl border-b border-white/5 h-12 flex items-center justify-between px-4 md:px-6 text-xs font-normal tracking-wide text-[#f5f5f7]/80">
+        <div class="font-semibold text-white tracking-tight cursor-pointer" id="nav-logo">S.PRABHAKAR</div>
         <!-- Scrollable links container on tiny screens -->
         <div class="flex space-x-4 md:space-x-6 font-medium overflow-x-auto no-scrollbar max-w-[70%] py-1">
             <a href="#hero" class="hover:text-[#007aff] transition-colors duration-300 whitespace-nowrap">Overview</a>
@@ -33,88 +38,106 @@
         </div>
     </nav>
 
-    <!-- SECTION 1: Bright Studio Hero with Abstract Tech Overlay -->
-    <section id="hero" class="h-screen w-full flex flex-col justify-center items-center text-center px-6 sticky top-0 overflow-hidden bg-white">
-        <!-- Abstract Tech Backdrop Graphic -->
-        <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop')] bg-cover bg-center opacity-15 mix-blend-multiply z-0"></div>
-        <div class="absolute top-[15%] w-[300px] sm:w-[700px] h-[300px] bg-gradient-to-tr from-sky-300/30 to-indigo-200/40 rounded-full blur-[80px] sm:blur-[120px] z-0 animate-pulse-slow"></div>
+    <!-- SECTION 1: Dark Studio Hero with 3D Interaction -->
+    <section id="hero" class="h-screen w-full flex flex-col justify-center items-center text-center px-6 sticky top-0 overflow-hidden bg-transparent">
+        <!-- Abstract Tech Glowing Orbs -->
+        <div class="absolute top-[15%] w-[300px] sm:w-[700px] h-[300px] bg-gradient-to-tr from-blue-500/10 to-indigo-500/10 rounded-full blur-[80px] sm:blur-[120px] z-0 animate-pulse-slow"></div>
 
         <div class="z-10 max-w-4xl px-2">
-            <span id="hero-tag" class="text-[10px] sm:text-xs uppercase tracking-[0.25em] bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent font-bold mb-4 block opacity-0 transform translate-y-4">
+            <span id="hero-tag" class="text-[10px] sm:text-xs uppercase tracking-[0.25em] bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent font-bold mb-4 block opacity-0 transform translate-y-4">
                 Systems Engineer & Quality Architect
             </span>
-<section id="hero" class="h-screen flex items-center justify-center bg-[#000000]">
-  <h1 id="hero-name" class="text-white text-7xl font-bold">
-    Shivi Prabhakar
-  </h1>
-</section>
+            <h1 id="hero-text" class="text-4xl sm:text-6xl md:text-8xl font-bold tracking-tight bg-gradient-to-b from-[#ffffff] via-[#e2e8f0] to-[#86868b] bg-clip-text text-transparent transform scale-150 opacity-0">
+                Shivi Prabhakar
             </h1>
-            <p id="hero-subtext" class="text-base sm:text-xl md:text-2xl text-[#515154] mt-6 max-w-3xl mx-auto opacity-0 font-light leading-relaxed">
-                QA Automation Development Lead with a <span class="text-blue-600 font-semibold">10-year track record</span>. I architect AI-integrated testing frameworks from scratch, streamlining quality for large engineering teams using Selenium, Cypress, and TOSCA.
+            <p id="hero-subtext" class="text-base sm:text-xl md:text-2xl text-[#86868b] mt-6 max-w-3xl mx-auto opacity-0 font-light leading-relaxed">
+                QA Automation Development Lead with a <span class="text-blue-400 font-semibold">10-year track record</span>. I architect AI-integrated testing frameworks from scratch, streamlining quality for large engineering teams using Selenium, Cypress, and TOSCA.
             </p>
         </div>
     </section>
 
     <!-- SECTION 2: Pinned Scrollytelling Timeline (Fluid Mobile Scaling) -->
-    <section id="experience" class="relative min-h-[500vh] bg-[#f5f5f7] z-10 border-t border-black/5">
-        <div class="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden px-4 sm:px-6 bg-[radial-gradient(circle_at_80%_20%,#e0f2fe_0%,#f5f5f7_70%)]">
-            <div class="absolute bottom-[10%] left-[10%] w-[300px] sm:w-[500px] h-[300px] bg-indigo-100/50 rounded-full blur-[100px] pointer-events-none"></div>
+    <section id="experience" class="relative min-h-[500vh] bg-transparent z-10 border-t border-white/5">
+        <div class="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden px-4 sm:px-6 bg-[radial-gradient(circle_at_80%_20%,rgba(0,122,255,0.05)_0%,rgba(7,7,9,0)_70%)]">
+            <div class="absolute bottom-[10%] left-[10%] w-[300px] sm:w-[500px] h-[300px] bg-indigo-500/5 rounded-full blur-[100px] pointer-events-none"></div>
             
             <!-- Slide 1: General Core Overview Narrative -->
             <div class="exp-slide absolute flex flex-col items-center text-center max-w-4xl w-full px-4">
                 <span class="text-xs uppercase tracking-[0.2em] text-[#007aff] font-bold mb-3">Professional Profile</span>
-                <h2 class="text-3xl sm:text-5xl md:text-7xl font-bold tracking-tight text-[#1d1d1f] mb-4 sm:mb-6">Built for Scale.<br>Engineered for Trust.</h2>
-                <p class="text-sm sm:text-lg md:text-xl text-[#515154] max-w-2xl font-light leading-relaxed">
-                    Detail-oriented architect specializing in cross-browser test suites, native mobile apps, and deep backend web service parsing. Dedicated to driving strict software analysis standards while leading agile dev teams.
+                <h2 class="text-3xl sm:text-5xl md:text-7xl font-bold tracking-tight text-white mb-4 sm:mb-6">Built for Scale.<br>Engineered for Trust.</h2>
+                <p class="text-sm sm:text-lg md:text-xl text-[#86868b] max-w-2xl font-light leading-relaxed">
+                    Detail-oriented professional with a sharp focus on web applications, possessing a comprehensive understanding of various software testing and analysis tools. Dedicated to upholding established quality standards. Skilled in effectively teaching and presenting complex material to diverse audiences, both professional and nonprofessional. Demonstrated ability to work independently or collaboratively within a team setting.
                 </p>
             </div>
 
             <!-- Slide 2: Active Leadership - Empire Life -->
             <div class="exp-slide absolute opacity-0 flex flex-col items-center text-center max-w-4xl w-full px-4">
-                <span class="text-[10px] sm:text-xs uppercase tracking-widest text-emerald-600 font-mono font-bold mb-2">Dec 2023 – Present</span>
-                <h3 class="text-lg sm:text-xl md:text-2xl text-[#515154] font-light">QA Automation Development Lead</h3>
-                <h4 class="text-3xl sm:text-5xl md:text-6xl font-bold text-[#1d1d1f] tracking-tight mt-1 mb-4 sm:mb-6">Empire Life</h4>
-                <p class="text-xs sm:text-base md:text-lg text-[#333336] font-normal max-w-3xl leading-relaxed">
-                    Leading and mentoring a high-performance team of ten engineers, driving the shift toward AI-enhanced QA. Architected robust automation frameworks from scratch using TOSCA, Selenium, and Cypress. Integrated AI workflows to accelerate test authoring and optimize sprint regressions, transforming manual bottlenecks into scalable, self-healing systems.
+                <span class="text-[10px] sm:text-xs uppercase tracking-widest text-emerald-400 font-mono font-bold mb-2">Dec 2023 – Present</span>
+                <h3 class="text-lg sm:text-xl md:text-2xl text-[#86868b] font-light">QA Automation Development Lead</h3>
+                <h4 class="text-3xl sm:text-5xl md:text-6xl font-bold text-white tracking-tight mt-1 mb-4 sm:mb-6">Empire Life</h4>
+                <p class="text-xs sm:text-base md:text-lg text-[#e2e8f0] font-normal max-w-3xl leading-relaxed">
+                    Led a team of 10 QAs in the Retail Insurance Automation domain, mentoring and driving best practices. Architected hybrid automation frameworks (Selenium + Java + Cucumber) supporting UI, API, and mobile platforms. Built AI-structured test suites using Testim.io, integrated nightly regressions via GitHub Actions, conducted AODA accessibility tests (WAVE & Level Access), and designed PowerBI metrics dashboards.
                 </p>
-                <p class="text-[10px] sm:text-xs font-mono text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200 mt-4 shadow-sm">
-                    [ TOSCA | Selenium | Cypress | AI-Integrated Workflows | GitHub Actions ]
+                <p class="text-[10px] sm:text-xs font-mono text-emerald-400 bg-emerald-950/30 px-3 py-1 rounded-full border border-emerald-800/40 mt-4 shadow-sm">
+                    [ Selenium | Cucumber | Java | Testim.io | GitHub Actions | PowerBI | AODA Testing ]
                 </p>
             </div>
 
             <!-- Slide 3: Enterprise Engineering - RBC -->
             <div class="exp-slide absolute opacity-0 flex flex-col items-center text-center max-w-4xl w-full px-4">
-                <span class="text-[10px] sm:text-xs uppercase tracking-widest text-purple-600 font-mono font-bold mb-2">Aug 2022 – Dec 2023</span>
-                <h3 class="text-lg sm:text-xl md:text-2xl text-[#515154] font-light">Lead SDET</h3>
-                <h4 class="text-3xl sm:text-5xl md:text-6xl font-bold text-[#1d1d1f] tracking-tight mt-1 mb-4 sm:mb-6">Royal Bank of Canada</h4>
-                <p class="text-xs sm:text-base md:text-lg text-[#333336] font-normal max-w-3xl leading-relaxed">
-                    Orchestrated comprehensive service-level verification layers for the RBC Mobile app. Increased regression test intensity and script depth by 40% using specialized automated frameworks alongside TestComplete and Tricentis ReadyAPI infrastructure loops.
+                <span class="text-[10px] sm:text-xs uppercase tracking-widest text-purple-400 font-mono font-bold mb-2">Aug 2022 – Dec 2023</span>
+                <h3 class="text-lg sm:text-xl md:text-2xl text-[#86868b] font-light">Lead Software Development Engineer in Test</h3>
+                <h4 class="text-3xl sm:text-5xl md:text-6xl font-bold text-white tracking-tight mt-1 mb-4 sm:mb-6">Royal Bank of Canada</h4>
+                <p class="text-xs sm:text-base md:text-lg text-[#e2e8f0] font-normal max-w-3xl leading-relaxed">
+                    Conducted service-level verification for the RBC Mobile app (Transfers, Payments, History, Wealth Mgmt). Validated and automated API endpoints using Postman, ReadyAPI, and TestComplete, achieving a 40% automation coverage boost with AI tools. Monitored traffic with Dynatrace, verified SWIFT & Fedwire global transactions, and integrated watchlist filtering (FircoSoft) for financial crime compliance.
                 </p>
-                <p class="text-[10px] sm:text-xs font-mono text-purple-700 bg-purple-50 px-3 py-1 rounded-full border border-purple-200 mt-4 shadow-sm">
-                    [ Ready API | TestComplete | DynaTrace | Postman ]
+                <p class="text-[10px] sm:text-xs font-mono text-purple-400 bg-purple-950/30 px-3 py-1 rounded-full border border-purple-800/40 mt-4 shadow-sm">
+                    [ ReadyAPI | TestComplete | Appium | Dynatrace | FircoSoft | Postman | SWIFT & Fedwire ]
                 </p>
             </div>
 
-            <!-- Slide 4: Full Chronology History Cards -->
+            <!-- Slide 4: Previous QA Automation Lead - Empire Life -->
+            <div class="exp-slide absolute opacity-0 flex flex-col items-center text-center max-w-4xl w-full px-4">
+                <span class="text-[10px] sm:text-xs uppercase tracking-widest text-sky-400 font-mono font-bold mb-2">Dec 2019 – Aug 2022</span>
+                <h3 class="text-lg sm:text-xl md:text-2xl text-[#86868b] font-light">QA Automation Development Lead</h3>
+                <h4 class="text-3xl sm:text-5xl md:text-6xl font-bold text-white tracking-tight mt-1 mb-4 sm:mb-6">Empire Life</h4>
+                <p class="text-xs sm:text-base md:text-lg text-[#e2e8f0] font-normal max-w-3xl leading-relaxed">
+                    Drove automation initiatives across Retail Insurance and the Wealth Management ROBO platform. Built and scaled automation frameworks using Selenium & Cypress to achieve high test coverage. Implemented CI/CD pipelines via GitHub Actions with scheduled nightly runs, designed QA metrics dashboards in PowerBI, and managed release readiness validations.
+                </p>
+                <p class="text-[10px] sm:text-xs font-mono text-sky-400 bg-sky-950/30 px-3 py-1 rounded-full border border-sky-800/40 mt-4 shadow-sm">
+                    [ Selenium | Cypress | GitHub Actions | PowerBI | PractiTest | ReportPortal.io ]
+                </p>
+            </div>
+
+            <!-- Slide 5: Full Chronology History Cards -->
             <div class="exp-slide absolute opacity-0 flex flex-col items-center text-center w-full max-w-4xl px-4 overflow-y-auto max-h-[85vh] no-scrollbar">
-                <span class="text-xs uppercase tracking-[0.2em] text-amber-600 font-bold mb-2 sm:mb-4">Enterprise Chronology</span>
-                <h4 class="text-2xl sm:text-4xl md:text-5xl font-bold text-[#1d1d1f] tracking-tight mb-6 sm:mb-8">Structural Timeline</h4>
+                <span class="text-xs uppercase tracking-[0.2em] text-amber-400 font-bold mb-2 sm:mb-4">Enterprise History</span>
+                <h4 class="text-2xl sm:text-4xl md:text-5xl font-bold text-white tracking-tight mb-6 sm:mb-8">Structural Timeline</h4>
                 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 text-left w-full">
-                    <div class="bg-white p-5 sm:p-6 rounded-2xl border border-black/5 shadow-md">
-                        <span class="text-xs font-mono font-bold text-amber-600">2019</span>
-                        <h5 class="text-base font-bold text-[#1d1d1f] mt-1">Workjam Inc.</h5>
-                        <p class="text-xs text-[#515154] mt-2 leading-relaxed">Senior QA Developer. Constructed REST API test patterns hooked cleanly into structural BitBucket loops.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 text-left w-full max-w-3xl">
+                    <div class="glass-card p-5 sm:p-6 rounded-2xl">
+                        <span class="text-xs font-mono font-bold text-amber-400">Sep 2019 - Jan 2020</span>
+                        <h5 class="text-base font-bold text-white mt-1">Workman Inc.</h5>
+                        <p class="text-xs text-[#86868b] mt-2 leading-relaxed">Senior QA Developer. Set up backend automation frameworks for REST APIs. Designed test scenarios, performed manual feature validation, and integrated pipelines with Bitbucket.</p>
+                        <span class="text-[9px] font-mono text-amber-500/80 block mt-2">[ Selenium | Rest API | Cassandra | Bitbucket ]</span>
                     </div>
-                    <div class="bg-white p-5 sm:p-6 rounded-2xl border border-black/5 shadow-md">
-                        <span class="text-xs font-mono font-bold text-sky-600">2018 - 2019</span>
-                        <h5 class="text-base font-bold text-[#1d1d1f] mt-1">Broadsign Ayuda</h5>
-                        <p class="text-xs text-[#515154] mt-2 leading-relaxed">Performance Testing Head. Engineered heavy load scenarios via Apache JMeter and managed cloud matrix executions with Sauce Labs.</p>
+                    <div class="glass-card p-5 sm:p-6 rounded-2xl">
+                        <span class="text-xs font-mono font-bold text-sky-400">Aug 2018 - Sep 2019</span>
+                        <h5 class="text-base font-bold text-white mt-1">Broadsign</h5>
+                        <p class="text-xs text-[#86868b] mt-2 leading-relaxed">QA Tester & Performance Lead. Automated test cases using Cucumber and Maven (Java). Conducted load testing with JMeter and Flood.io, and performed API validation using Postman.</p>
+                        <span class="text-[9px] font-mono text-sky-500/80 block mt-2">[ JMeter | Flood.io | Maven | Postman | Sauce Labs ]</span>
                     </div>
-                    <div class="bg-white p-5 sm:p-6 rounded-2xl border border-black/5 shadow-md">
-                        <span class="text-xs font-mono font-bold text-emerald-600">2015 - 2018</span>
-                        <h5 class="text-base font-bold text-[#1d1d1f] mt-1">Nour Transport</h5>
-                        <p class="text-xs text-[#515154] mt-2 leading-relaxed">Automation Dev. Formulated functional validation models using core Java configurations and deep relational database queries.</p>
+                    <div class="glass-card p-5 sm:p-6 rounded-2xl">
+                        <span class="text-xs font-mono font-bold text-emerald-400">Aug 2018 - Sep 2024</span>
+                        <h5 class="text-base font-bold text-white mt-1">SEC Testing Program</h5>
+                        <p class="text-xs text-[#86868b] mt-2 leading-relaxed">Computer Science Teacher. Taught manual and automated testing, UML modeling, algorithms, OOP (Python & Java), and SDLC methodologies to equip learners with SDET skills.</p>
+                        <span class="text-[9px] font-mono text-emerald-500/80 block mt-2">[ Java | Python | UML | Agile | SDLC ]</span>
+                    </div>
+                    <div class="glass-card p-5 sm:p-6 rounded-2xl">
+                        <span class="text-xs font-mono font-bold text-purple-400">May 2015 - Aug 2018</span>
+                        <h5 class="text-base font-bold text-white mt-1">Nour Transport</h5>
+                        <p class="text-xs text-[#86868b] mt-2 leading-relaxed">Test Automation Developer. Developed Java test programs for functional, regression, and JMeter performance verification. Wrote database SQL queries and validated mobile trucking routes.</p>
+                        <span class="text-[9px] font-mono text-purple-500/80 block mt-2">[ Java | Selenium | SQL | JMeter | JIRA ]</span>
                     </div>
                 </div>
             </div>
@@ -122,22 +145,20 @@
         </div>
     </section>
 
-    <!-- SECTION 3: Premium Light Bento Grid (Responsive Reflow) -->
-    <section id="specs" class="relative min-h-screen bg-[#f5f5f7] text-[#1d1d1f] py-16 sm:py-24 px-4 sm:px-6 z-20 border-t border-black/5">
-        <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=2670&auto=format&fit=crop')] bg-cover bg-center opacity-5 mix-blend-overlay pointer-events-none z-0"></div>
-        
+    <!-- SECTION 3: Premium Dark Bento Grid (Responsive Reflow) -->
+    <section id="specs" class="relative min-h-screen bg-transparent text-[#f5f5f7] py-16 sm:py-24 px-4 sm:px-6 z-20 border-t border-white/5">
         <div class="max-w-5xl mx-auto relative z-10">
             <span class="text-xs uppercase tracking-[0.3em] text-[#86868b] font-bold block text-center mb-2">Technical Matrix</span>
-            <h2 class="text-3xl sm:text-6xl font-bold tracking-tight mb-12 sm:text-center bg-gradient-to-b from-[#1d1d1f] to-[#86868b] bg-clip-text text-transparent">Engineered Specs.</h2>
+            <h2 class="text-3xl sm:text-6xl font-bold tracking-tight mb-6 sm:text-center bg-gradient-to-b from-[#ffffff] to-[#86868b] bg-clip-text text-transparent">Engineered Specs.</h2>
             
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6" id="bento-container">
                 <!-- Card 1 -->
                 <div class="md:col-span-2 glass-card p-6 sm:p-8 rounded-[24px] sm:rounded-[28px] flex flex-col justify-between min-h-[240px] sm:h-85 relative overflow-hidden group">
                     <div>
-                        <span class="text-[10px] sm:text-xs font-mono font-bold uppercase tracking-wider text-[#ff3b30]">Architectural Frameworks</span>
-                        <h3 class="text-xl sm:text-3xl font-bold mt-2 text-[#1d1d1f]">TOSCA, Selenium & Cypress</h3>
+                        <span class="text-[10px] sm:text-xs font-mono font-bold uppercase tracking-wider text-[#ff453a]">Architectural Frameworks</span>
+                        <h3 class="text-xl sm:text-3xl font-bold mt-2 text-white">TOSCA, Selenium & Cypress</h3>
                     </div>
-                    <p class="text-[#515154] text-xs sm:text-sm leading-relaxed mt-4">
+                    <p class="text-[#86868b] text-xs sm:text-sm leading-relaxed mt-4">
                         Building high-velocity testing architectures from scratch. I integrate AI-driven testing tools—including Testim—to maintain framework stability while leading cross-functional QA teams in scaling test coverage.
                     </p>
                 </div>
@@ -145,10 +166,10 @@
                 <!-- Card 2 -->
                 <div class="glass-card p-6 sm:p-8 rounded-[24px] sm:rounded-[28px] flex flex-col justify-between min-h-[200px] sm:h-80 group">
                     <div>
-                        <span class="text-[10px] sm:text-xs font-mono font-bold uppercase tracking-wider text-emerald-600">Language Core</span>
-                        <h3 class="text-xl sm:text-3xl font-bold mt-2 text-[#1d1d1f]">Java & SQL</h3>
+                        <span class="text-[10px] sm:text-xs font-mono font-bold uppercase tracking-wider text-emerald-400">Language Core</span>
+                        <h3 class="text-xl sm:text-3xl font-bold mt-2 text-white">Java & SQL</h3>
                     </div>
-                    <p class="text-[#515154] text-xs sm:text-sm leading-relaxed mt-2">
+                    <p class="text-[#86868b] text-xs sm:text-sm leading-relaxed mt-2">
                         Data serialization layer routines built around relational schema sets, deep query logic, and Cassandra (CCM) clusters.
                     </p>
                 </div>
@@ -156,10 +177,10 @@
                 <!-- Card 3 -->
                 <div class="glass-card p-6 sm:p-8 rounded-[24px] sm:rounded-[28px] flex flex-col justify-between min-h-[200px] sm:h-80 group">
                     <div>
-                        <span class="text-[10px] sm:text-xs font-mono font-bold uppercase tracking-wider text-purple-600">Stress Diagnostics</span>
-                        <h3 class="text-xl sm:text-2xl font-bold mt-2 text-[#1d1d1f]">JMeter & Appium</h3>
+                        <span class="text-[10px] sm:text-xs font-mono font-bold uppercase tracking-wider text-purple-400">Stress Diagnostics</span>
+                        <h3 class="text-xl sm:text-2xl font-bold mt-2 text-white">JMeter & Appium</h3>
                     </div>
-                    <p class="text-[#515154] text-xs sm:text-sm leading-relaxed mt-2">
+                    <p class="text-[#86868b] text-xs sm:text-sm leading-relaxed mt-2">
                         Simulating deep multi-threaded traffic conditions alongside cross-device validation loops across localized hardware matrices.
                     </p>
                 </div>
@@ -167,27 +188,27 @@
                 <!-- Card 4 -->
                 <div class="md:col-span-2 glass-card p-6 sm:p-8 rounded-[24px] sm:rounded-[28px] flex flex-col justify-between min-h-[240px] sm:h-80 group">
                     <div>
-                        <span class="text-[10px] sm:text-xs font-mono font-bold uppercase tracking-wider text-[#007aff]">Release Architecture</span>
-                        <h3 class="text-xl sm:text-3xl font-bold mt-2 text-[#1d1d1f]">GitHub Actions & DevOps</h3>
+                        <span class="text-[10px] sm:text-xs font-mono font-bold uppercase tracking-wider text-[#0A84FF]">Release Architecture</span>
+                        <h3 class="text-xl sm:text-3xl font-bold mt-2 text-white">GitHub Actions & DevOps</h3>
                     </div>
-                    <p class="text-[#515154] text-xs sm:text-sm leading-relaxed mt-4">
+                    <p class="text-[#86868b] text-xs sm:text-sm leading-relaxed mt-4">
                         Orchestrating nightly cron runners, pipeline compilation configurations, and formatting clear QA quality analytical metrics straight into PowerBI dashboards.
                     </p>
                 </div>
             </div>
 
             <!-- Credentials Footer -->
-            <div class="mt-16 sm:mt-24 border-t border-black/10 pt-12 grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-12 text-xs sm:text-sm text-[#515154]">
-                <div class="bg-white p-5 sm:p-6 rounded-2xl border border-black/5 shadow-sm">
-                    <h4 class="text-[#007aff] uppercase font-bold text-xs tracking-wider mb-4 font-mono">Credentials & Certifications</h4>
-                    <ul class="space-y-2 font-normal text-[#1d1d1f]">
+            <div class="mt-16 sm:mt-24 border-t border-white/10 pt-12 grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-12 text-xs sm:text-sm text-[#86868b]">
+                <div class="glass-card p-5 sm:p-6 rounded-2xl">
+                    <h4 class="text-[#0A84FF] uppercase font-bold text-xs tracking-wider mb-4 font-mono">Credentials & Certifications</h4>
+                    <ul class="space-y-2 font-normal text-white">
                         <li><strong class="font-bold">ISTQB</strong> — Certified Tester</li>
                         <li><strong class="font-bold">Scrum Master</strong> — Agile Delivery Specialist</li>
                     </ul>
                 </div>
-                <div class="bg-white p-5 sm:p-6 rounded-2xl border border-black/5 shadow-sm">
-                    <h4 class="text-emerald-600 uppercase font-bold text-xs tracking-wider mb-4 font-mono">Academic Foundations</h4>
-                    <ul class="space-y-2 font-normal text-[#1d1d1f]">
+                <div class="glass-card p-5 sm:p-6 rounded-2xl">
+                    <h4 class="text-emerald-400 uppercase font-bold text-xs tracking-wider mb-4 font-mono">Academic Foundations</h4>
+                    <ul class="space-y-2 font-normal text-white">
                         <li><strong class="font-bold">Post Graduate Diploma: Mobile App Dev</strong> — Cégep de la Gaspésie</li>
                         <li><strong class="font-bold">Bachelor of Technology: Electronics & Comm</strong> — VIT (3.88 GPA)</li>
                     </ul>

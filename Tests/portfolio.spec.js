@@ -1,7 +1,8 @@
 const { test, expect, devices } = require('@playwright/test');
+const path = require('path');
 
-// Points to your local Live Server instance
-const LOCAL_SITE_URL = 'http://127.0.0.1:5500/index.html'; 
+// Points to your local file system resolved path
+const LOCAL_SITE_URL = `file://${path.resolve(__dirname, '../index.html')}`; 
 
 test.describe('Apple Portfolio Core Suite', () => {
 
