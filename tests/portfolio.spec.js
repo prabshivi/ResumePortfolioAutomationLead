@@ -36,6 +36,20 @@ test.describe('Apple Portfolio Core Suite', () => {
         // Access the slide elements
         const slides = page.locator('.exp-slide');
         
+        // Dynamically compute viewport-dependent scroll positions
+        const viewport = page.viewportSize();
+        const vh = viewport ? viewport.height : 720;
+        const triggerStart = vh;
+        const triggerDistance = 4 * vh;
+
+        const getScrollYForSlide = (slideIndex) => {
+            // Midpoint timeline times for peak opacity:
+            const peakTimes = [0.5, 3.6, 6.8, 10.0, 13.2];
+            const timelineDuration = 14.8;
+            const progress = peakTimes[slideIndex] / timelineDuration;
+            return Math.round(triggerStart + triggerDistance * progress);
+        };
+        
         // Helper to scroll and check slide visibility
         const verifySlideVisible = async (scrollY, visibleIndex) => {
             await page.evaluate((y) => {
@@ -54,10 +68,10 @@ test.describe('Apple Portfolio Core Suite', () => {
         };
 
         // Scroll sequentially to check each slide's scrollytelling transition
-        await verifySlideVisible(800, 0);   // Slide 1: Profile
-        await verifySlideVisible(1400, 1);  // Slide 2: Active Leadership
-        await verifySlideVisible(2000, 2);  // Slide 3: RBC SDET
-        await verifySlideVisible(2600, 3);  // Slide 4: Previous Lead
-        await verifySlideVisible(3200, 4);  // Slide 5: History cards
+        await verifySlideVisible(getScrollYForSlide(0), 0);   // Slide 1: Profile
+        await verifySlideVisible(getScrollYForSlide(1), 1);  // Slide 2: Active Leadership
+        await verifySlideVisible(getScrollYForSlide(2), 2);  // Slide 3: RBC SDET
+        await verifySlideVisible(getScrollYForSlide(3), 3);  // Slide 4: Previous Lead
+        await verifySlideVisible(getScrollYForSlide(4), 4);  // Slide 5: History cards
     });
 });
