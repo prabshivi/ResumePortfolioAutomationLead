@@ -625,6 +625,7 @@
             },
 
             draw() {
+                if (!this.canvas) return;
                 const width = this.canvas.width / window.devicePixelRatio;
                 const height = this.canvas.height / window.devicePixelRatio;
                 this.ctx.clearRect(0, 0, width, height);
@@ -648,17 +649,21 @@
                     this.ctx.setLineDash([]);
                 }
 
+                // Decide whether to use step state or static graph
+                const activeNodes = this.activeGraphState ? this.activeGraphState.nodes : Graph.nodes;
+                const activeEdges = this.activeGraphState ? this.activeGraphState.edges : Graph.edges;
+
                 // 3. Draw Edges
-                Graph.edges.forEach(e => {
-                    const n1 = Graph.nodes.find(n => n.id === e.source);
-                    const n2 = Graph.nodes.find(n => n.id === e.target);
+                activeEdges.forEach(e => {
+                    const n1 = activeNodes.find(n => n.id === e.source);
+                    const n2 = activeNodes.find(n => n.id === e.target);
                     if (n1 && n2) {
                         this.drawEdge(n1, n2, e);
                     }
                 });
 
                 // 4. Draw Nodes
-                Graph.nodes.forEach(n => {
+                activeNodes.forEach(n => {
                     this.drawNode(n);
                 });
 
@@ -2096,7 +2101,317 @@
                     description: `Complete the TSP cycle by returning to start node ${startId}. Final Tour: ${path.join(' → ')}. Total Cost: ${totalCost}`,
                     structures: { tour: path, total_cost: totalCost }
                 });
+            },
+
+            // Playback controls implementation
+            initPlayback() {
+                updateSelectors();
+                this.loadPseudocode(document.getElementById('select-algorithm').value);
+                
+                document.getElementById('select-algorithm').addEventListener('change', (e) => {
+                    this.loadPseudocode(e.target.value);
+                    this.stop();
+                });
+                
+                document.getElementById('btn-alg-play').addEventListener('click', () => {
+                    if (this.isPlaying) {
+                        this.pause();
+                    } else {
+                        this.play();
+                    }
+                });
+
+                document.getElementById('btn-alg-prev').addEventListener('click', () => {
+                    this.prevStep();
+                });
+
+                document.getElementById('btn-alg-next').addEventListener('click', () => {
+                    this.nextStep();
+                });
+
+                document.getElementById('btn-alg-stop').addEventListener('click', () => {
+                    this.stop();
+                });
+
+                document.getElementById('slider-speed').addEventListener('input', (e) => {
+                    this.speed = parseInt(e.target.value);
+                    document.getElementById('label-speed').textContent = `${this.speed}ms`;
+                    if (this.isPlaying) {
+                        this.pause();
+                        this.play();
+                    }
+                });
+
+                document.getElementById('slider-timeline').addEventListener('input', (e) => {
+                    this.currentStep = parseInt(e.target.value);
+                    this.renderStep();
+                });
+            },
+
+            play() {
+                if (this.trace.length === 0) {
+                    const alg = document.getElementById('select-algorithm').value;
+                    const startId = document.getElementById('select-start-node').value;
+                    const targetId = document.getElementById('select-target-node').value;
+                    this.generateTrace(alg, startId, targetId);
+                }
+                
+                if (this.trace.length === 0) return;
+                
+                this.isPlaying = true;
+                document.getElementById('btn-alg-play').innerHTML = `
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25v13.5m-7.5-13.5v13.5"/>
+                    </svg>
+                    Pause
+                `;
+                
+                this.intervalId = setInterval(() => {
+                    if (this.currentStep < this.trace.length - 1) {
+                        this.nextStep();
+                    } else {
+                        this.pause();
+                    }
+                }, this.speed);
+            },
+
+            pause() {
+                this.isPlaying = false;
+                document.getElementById('btn-alg-play').innerHTML = `
+                    <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                        <path d="M8 5v14l11-7z"/>
+                    </svg>
+                    Play
+                `;
+                if (this.intervalId) {
+                    clearInterval(this.intervalId);
+                    this.intervalId = null;
+                }
+            },
+
+            stop() {
+                this.pause();
+                this.currentStep = 0;
+                this.trace = [];
+                CanvasEngine.activeGraphState = null;
+                
+                document.getElementById('slider-timeline').value = 0;
+                document.getElementById('slider-timeline').max = 0;
+                document.getElementById('slider-timeline').disabled = true;
+                document.getElementById('label-timeline').textContent = "0 / 0";
+                document.getElementById('state-description').textContent = "Algorithm not running. Press Play or Step Forward to begin.";
+                document.getElementById('state-data-structures').innerHTML = `<div class="text-zinc-600 font-mono text-[10px]">No active data structures.</div>`;
+                
+                const pseudocodeContainer = document.getElementById('pseudocode-container');
+                const active = pseudocodeContainer.querySelector('.bg-accentIndigo\\/20');
+                if (active) active.classList.remove('bg-accentIndigo/20', 'text-white', 'border-l-2', 'border-accentIndigo');
+                
+                CanvasEngine.draw();
+            },
+
+            nextStep() {
+                if (this.trace.length === 0) {
+                    const alg = document.getElementById('select-algorithm').value;
+                    const startId = document.getElementById('select-start-node').value;
+                    const targetId = document.getElementById('select-target-node').value;
+                    this.generateTrace(alg, startId, targetId);
+                }
+                
+                if (this.trace.length === 0) return;
+
+                if (this.currentStep < this.trace.length - 1) {
+                    this.currentStep++;
+                    this.renderStep();
+                }
+            },
+
+            prevStep() {
+                if (this.trace.length === 0 || this.currentStep === 0) return;
+                this.currentStep--;
+                this.renderStep();
+            },
+
+            renderStep() {
+                if (this.trace.length === 0) return;
+                const step = this.trace[this.currentStep];
+                
+                const slider = document.getElementById('slider-timeline');
+                slider.disabled = false;
+                slider.max = this.trace.length - 1;
+                slider.value = this.currentStep;
+                
+                document.getElementById('label-timeline').textContent = `${this.currentStep + 1} / ${this.trace.length}`;
+                
+                CanvasEngine.activeGraphState = step.graphState;
+                CanvasEngine.draw();
+                
+                this.highlightLine(step.lineIdx);
+                
+                document.getElementById('state-description').textContent = step.description;
+                
+                const dsContainer = document.getElementById('state-data-structures');
+                dsContainer.innerHTML = "";
+                
+                if (step.structures) {
+                    Object.entries(step.structures).forEach(([key, val]) => {
+                        const div = document.createElement('div');
+                        div.className = "flex flex-col gap-1 border-b border-themeBorder/40 pb-2";
+                        
+                        let valStr = "";
+                        if (typeof val === 'object') {
+                            valStr = Object.entries(val)
+                                .map(([k, v]) => `${k}: ${v === Infinity ? '∞' : v}`)
+                                .join(', ');
+                        } else {
+                            valStr = val.toString();
+                        }
+                        
+                        div.innerHTML = `
+                            <span class="text-[10px] font-bold text-accentCyan uppercase font-mono tracking-wider">${key}</span>
+                            <span class="font-mono text-xs text-zinc-300">${valStr}</span>
+                        `;
+                        dsContainer.appendChild(div);
+                    });
+                }
+                
+                document.getElementById('btn-alg-prev').disabled = (this.currentStep === 0);
+                document.getElementById('btn-alg-next').disabled = (this.currentStep === this.trace.length - 1);
             }
+        };
+
+        // Bootstrap App
+        CanvasEngine.init('graph-canvas', 'canvas-parent');
+
+        if (!Graph.loadFromStorage()) {
+            Graph.addNode('A', 200, 150);
+            Graph.addNode('B', 400, 150);
+            Graph.addNode('C', 200, 350);
+            Graph.addNode('D', 400, 350);
+            Graph.addNode('E', 550, 250);
+            Graph.addEdge('A', 'B', 4);
+            Graph.addEdge('A', 'C', 2);
+            Graph.addEdge('B', 'C', 1);
+            Graph.addEdge('B', 'D', 5);
+            Graph.addEdge('C', 'D', 8);
+            Graph.addEdge('C', 'E', 10);
+            Graph.addEdge('D', 'E', 2);
+            Graph.saveToStorage();
+        }
+
+        updateSelectors();
+        syncMatrixUI();
+        CanvasEngine.draw();
+        AlgEngine.initPlayback();
+
+        // Preset Topology Configuration
+        const presets = {
+            'default': [
+                { type: 'node', id: 'A', x: 200, y: 150 },
+                { type: 'node', id: 'B', x: 400, y: 150 },
+                { type: 'node', id: 'C', x: 200, y: 350 },
+                { type: 'node', id: 'D', x: 400, y: 350 },
+                { type: 'node', id: 'E', x: 550, y: 250 },
+                { type: 'edge', src: 'A', dst: 'B', w: 4 },
+                { type: 'edge', src: 'A', dst: 'C', w: 2 },
+                { type: 'edge', src: 'B', dst: 'C', w: 1 },
+                { type: 'edge', src: 'B', dst: 'D', w: 5 },
+                { type: 'edge', src: 'C', dst: 'D', w: 8 },
+                { type: 'edge', src: 'C', dst: 'E', w: 10 },
+                { type: 'edge', src: 'D', dst: 'E', w: 2 }
+            ],
+            'negative_cycle': [
+                { type: 'node', id: 'A', x: 200, y: 250 },
+                { type: 'node', id: 'B', x: 350, y: 150 },
+                { type: 'node', id: 'C', x: 350, y: 350 },
+                { type: 'node', id: 'D', x: 500, y: 250 },
+                { type: 'edge', src: 'A', dst: 'B', w: 3 },
+                { type: 'edge', src: 'A', dst: 'C', w: 5 },
+                { type: 'edge', src: 'B', dst: 'C', w: -2 },
+                { type: 'edge', src: 'C', dst: 'B', w: -1 },
+                { type: 'edge', src: 'B', dst: 'D', w: 2 },
+                { type: 'edge', src: 'C', dst: 'D', w: 6 }
+            ],
+            'complete': [
+                { type: 'node', id: 'A', x: 375, y: 120 },
+                { type: 'node', id: 'B', x: 500, y: 220 },
+                { type: 'node', id: 'C', x: 450, y: 380 },
+                { type: 'node', id: 'D', x: 300, y: 380 },
+                { type: 'node', id: 'E', x: 250, y: 220 },
+                { type: 'edge', src: 'A', dst: 'B', w: 2 },
+                { type: 'edge', src: 'A', dst: 'C', w: 5 },
+                { type: 'edge', src: 'A', dst: 'D', w: 4 },
+                { type: 'edge', src: 'A', dst: 'E', w: 3 },
+                { type: 'edge', src: 'B', dst: 'C', w: 1 },
+                { type: 'edge', src: 'B', dst: 'D', w: 7 },
+                { type: 'edge', src: 'B', dst: 'E', w: 6 },
+                { type: 'edge', src: 'C', dst: 'D', w: 3 },
+                { type: 'edge', src: 'C', dst: 'E', w: 8 },
+                { type: 'edge', src: 'D', dst: 'E', w: 4 }
+            ],
+            'grid': [
+                { type: 'node', id: 'A', x: 250, y: 150 },
+                { type: 'node', id: 'B', x: 450, y: 150 },
+                { type: 'node', id: 'C', x: 250, y: 350 },
+                { type: 'node', id: 'D', x: 450, y: 350 },
+                { type: 'edge', src: 'A', dst: 'B', w: 2 },
+                { type: 'edge', src: 'A', dst: 'C', w: 4 },
+                { type: 'edge', src: 'B', dst: 'D', w: 3 },
+                { type: 'edge', src: 'C', dst: 'D', w: 1 }
+            ],
+            'mst_demo': [
+                { type: 'node', id: 'A', x: 200, y: 250 },
+                { type: 'node', id: 'B', x: 300, y: 150 },
+                { type: 'node', id: 'C', x: 300, y: 350 },
+                { type: 'node', id: 'D', x: 450, y: 150 },
+                { type: 'node', id: 'E', x: 450, y: 350 },
+                { type: 'node', id: 'F', x: 550, y: 250 },
+                { type: 'edge', src: 'A', dst: 'B', w: 2 },
+                { type: 'edge', src: 'A', dst: 'C', w: 4 },
+                { type: 'edge', src: 'B', dst: 'C', w: 1 },
+                { type: 'edge', src: 'B', dst: 'D', w: 7 },
+                { type: 'edge', src: 'C', dst: 'D', w: 3 },
+                { type: 'edge', src: 'C', dst: 'E', w: 5 },
+                { type: 'edge', src: 'D', dst: 'E', w: 2 },
+                { type: 'edge', src: 'D', dst: 'F', w: 8 },
+                { type: 'edge', src: 'E', dst: 'F', w: 4 }
+            ],
+            'tsp_demo': [
+                { type: 'node', id: 'A', x: 200, y: 150 },
+                { type: 'node', id: 'B', x: 450, y: 150 },
+                { type: 'node', id: 'C', x: 500, y: 350 },
+                { type: 'node', id: 'D', x: 250, y: 350 },
+                { type: 'node', id: 'E', x: 350, y: 250 },
+                { type: 'edge', src: 'A', dst: 'B', w: 12 },
+                { type: 'edge', src: 'B', dst: 'C', w: 8 },
+                { type: 'edge', src: 'C', dst: 'D', w: 15 },
+                { type: 'edge', src: 'D', dst: 'A', w: 9 },
+                { type: 'edge', src: 'A', dst: 'E', w: 6 },
+                { type: 'edge', src: 'B', dst: 'E', w: 7 },
+                { type: 'edge', src: 'C', dst: 'E', w: 5 },
+                { type: 'edge', src: 'D', dst: 'E', w: 4 }
+            ],
+            'empty': []
+        };
+
+        document.getElementById('select-preset').addEventListener('change', (e) => {
+            const key = e.target.value;
+            const preset = presets[key];
+            if (!preset) return;
+            
+            Graph.clear();
+            preset.forEach(item => {
+                if (item.type === 'node') {
+                    Graph.addNode(item.id, item.x, item.y);
+                } else if (item.type === 'edge') {
+                    Graph.addEdge(item.src, item.dst, item.w, Graph.isDirected);
+                }
+            });
+            Graph.saveToStorage();
+            updateSelectors();
+            syncMatrixUI();
+            CanvasEngine.draw();
+            AlgEngine.stop();
+        });
         };
 
     </script>
