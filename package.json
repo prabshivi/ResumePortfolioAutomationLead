@@ -1,0 +1,11 @@
+{
+  "name": "resume-portfolio",
+  "version": "1.0.0",
+  "description": "Resume Portfolio Test Suite",
+  "scripts": {
+    "test": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.40.0"
+  }
+}

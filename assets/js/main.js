@@ -61,17 +61,17 @@ function initThree() {
     scene.add(dirLight);
 
     // Pulsing colored point lights to create a neon cyber glow
-    bluePoint = new THREE.PointLight(0x00d2ff, 4, 15);
+    bluePoint = new THREE.PointLight(0x00f2fe, 4, 15);
     scene.add(bluePoint);
 
-    violetPoint = new THREE.PointLight(0x9d4edd, 4, 15);
+    violetPoint = new THREE.PointLight(0x8b5cf6, 4, 15);
     scene.add(violetPoint);
 
     // Floating Sculptures (Torus and Icosahedron)
     // 1. Torus (Glassmorphic QA Loop)
     const torusGeo = new THREE.TorusGeometry(2.2, 0.45, 32, 100);
     const torusMat = new THREE.MeshPhysicalMaterial({
-        color: 0x007aff,
+        color: 0x00f2fe,
         metalness: 0.9,
         roughness: 0.05,
         transmission: 0.7,
@@ -87,7 +87,7 @@ function initThree() {
     // 2. Icosahedron (Security Core Node)
     const icoGeo = new THREE.IcosahedronGeometry(1.3, 0);
     const icoMat = new THREE.MeshStandardMaterial({
-        color: 0xa855f7,
+        color: 0x8b5cf6,
         metalness: 0.95,
         roughness: 0.15
     });
@@ -102,8 +102,8 @@ function initThree() {
     const nodeCount = 35;
     const sphereGeo = new THREE.SphereGeometry(0.06, 16, 16);
     const sphereMat = new THREE.MeshStandardMaterial({
-        color: 0x007aff,
-        emissive: 0x007aff,
+        color: 0x00f2fe,
+        emissive: 0x00f2fe,
         emissiveIntensity: 0.6,
         metalness: 0.8,
         roughness: 0.2
@@ -139,7 +139,7 @@ function initThree() {
     connectionGeometry.setAttribute('position', new THREE.BufferAttribute(positionArray, 3));
     
     const lineMat = new THREE.LineBasicMaterial({
-        color: 0x4f46e5,
+        color: 0x4facfe,
         transparent: true,
         opacity: 0.15
     });
@@ -249,8 +249,12 @@ function animate() {
 }
 
 // Start Three.js
-initThree();
-animate();
+try {
+    initThree();
+    animate();
+} catch (error) {
+    console.error("Three.js initialization failed: ", error);
+}
 
 // -------------------------------------------------------------
 // 3. Experience Scrollytelling Setup (Linked camera animations)

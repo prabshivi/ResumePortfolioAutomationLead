@@ -1,13 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
 /* --- Base Design System & CSS Variables --- */
 :root {
-    --bg-dark: #070709;
-    --card-bg: rgba(18, 18, 22, 0.45);
-    --card-border: rgba(255, 255, 255, 0.08);
-    --card-border-hover: rgba(255, 255, 255, 0.18);
-    --text-primary: #f5f5f7;
-    --text-secondary: #86868b;
-    --accent-blue: #007aff;
-    --accent-glow: rgba(0, 122, 255, 0.15);
+    --bg-dark: #04020b;
+    --card-bg: rgba(16, 12, 32, 0.45);
+    --card-border: rgba(255, 255, 255, 0.05);
+    --card-border-hover: rgba(139, 92, 246, 0.35);
+    --text-primary: #f5f3ff;
+    --text-secondary: #94a3b8;
+    --accent-cyan: #00f2fe;
+    --accent-indigo: #4facfe;
+    --accent-violet: #8b5cf6;
+    --accent-glow: rgba(139, 92, 246, 0.18);
 }
 
 * {
@@ -22,11 +26,11 @@ html {
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+    font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
     letter-spacing: -0.015em;
     background-color: var(--bg-dark);
     color: var(--text-primary);
-    overflow-x: hidden;
+    overflow-x: clip;
     min-height: 100vh;
 }
 
@@ -50,7 +54,7 @@ body {
         0 4px 30px rgba(0, 0, 0, 0.4),
         inset 0 1px 1px rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-blur: 20px;
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
     transform-style: preserve-3d;
     perspective: 1000px;
     will-change: transform;
