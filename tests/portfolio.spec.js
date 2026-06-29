@@ -74,4 +74,17 @@ test.describe('Apple Portfolio Core Suite', () => {
         await verifySlideVisible(getScrollYForSlide(3), 3);  // Slide 4: Previous Lead
         await verifySlideVisible(getScrollYForSlide(4), 4);  // Slide 5: History cards
     });
+
+    test('Verify LinkedIn Profile Link is Correct', async ({ page }) => {
+        await page.goto(LOCAL_SITE_URL);
+        const linkedinLink = page.locator('a[href*="linkedin.com/in/shivi-prabhakar-60565851"]');
+        await expect(linkedinLink).toBeVisible();
+    });
+
+    test('Verify Resume Download Button is Configured Correctly', async ({ page }) => {
+        await page.goto(LOCAL_SITE_URL);
+        const resumeBtn = page.locator('#download-resume-btn');
+        await expect(resumeBtn).toHaveAttribute('href', 'assets/Shivi_Prabhakar_Resume.pdf');
+        await expect(resumeBtn).toHaveAttribute('download');
+    });
 });

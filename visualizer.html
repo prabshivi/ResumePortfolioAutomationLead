@@ -1,0 +1,2419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AetherLink | Graph Sandbox & Algorithm Visualizer</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS (Direct CDN import) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        themeBg: '#09090b',
+                        themeCard: 'rgba(24, 24, 27, 0.75)',
+                        themeBorder: 'rgba(255, 255, 255, 0.08)',
+                        accentCyan: '#06b6d4',
+                        accentIndigo: '#6366f1',
+                        accentViolet: '#8b5cf6',
+                        accentRose: '#f43f5e',
+                        accentEmerald: '#10b981',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #09090b;
+            color: #fafafa;
+            overflow-x: hidden;
+        }
+        /* Custom scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.02);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        /* Glassmorphism utility */
+        .glass-card {
+            background: var(--tw-color-themeCard);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+        }
+        /* Pulse animations */
+        @keyframes pulse-glow {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+        }
+        .glow-effect {
+            animation: pulse-glow 3s infinite ease-in-out;
+        }
+        .canvas-container canvas {
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased min-h-screen flex flex-col">
+
+    <!-- Header Section -->
+    <header class="w-full border-b border-themeBorder bg-themeBg/80 backdrop-blur-md px-6 py-4 flex items-center justify-between sticky top-0 z-50">
+        <div class="flex items-center space-x-3">
+            <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-accentCyan to-accentIndigo flex items-center justify-center font-bold text-white shadow-lg shadow-accentCyan/20">
+                A
+            </div>
+            <div>
+                <h1 class="text-lg font-bold tracking-wider uppercase bg-gradient-to-r from-accentCyan to-accentViolet bg-clip-text text-transparent">AetherLink</h1>
+                <p class="text-[10px] text-zinc-500 font-medium tracking-widest uppercase">Graph Sandbox & Algorithms Engine</p>
+            </div>
+        </div>
+        <div class="flex items-center space-x-4">
+            <a href="index.html" class="px-4 py-2 text-xs font-semibold rounded-lg bg-zinc-900 border border-themeBorder hover:bg-zinc-800 hover:border-zinc-700 transition duration-200">
+                ← Back to Portfolio
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="flex-1 w-full max-w-[1600px] mx-auto p-4 lg:p-6 grid grid-cols-12 gap-6">
+        
+        <!-- Left Side: Input Tools & Graph Spec -->
+        <div class="col-span-12 lg:col-span-3 flex flex-col gap-6">
+            
+            <!-- Tool Settings -->
+            <div class="glass-card p-5 rounded-2xl flex flex-col gap-4">
+                <h3 class="text-sm font-bold text-zinc-300 uppercase tracking-widest font-mono">Toolbar Controls</h3>
+                
+                <div class="grid grid-cols-2 gap-2" id="canvas-tools">
+                    <button id="btn-tool-select" class="flex items-center justify-center gap-2 py-2 px-3 text-xs font-semibold rounded-lg bg-accentIndigo text-white transition duration-150">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"/></svg>
+                        Move
+                    </button>
+                    <button id="btn-tool-add-node" class="flex items-center justify-center gap-2 py-2 px-3 text-xs font-semibold rounded-lg bg-zinc-900 border border-themeBorder text-zinc-400 hover:bg-zinc-850 hover:text-white transition duration-150">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        Add Node
+                    </button>
+                    <button id="btn-tool-add-edge" class="flex items-center justify-center gap-2 py-2 px-3 text-xs font-semibold rounded-lg bg-zinc-900 border border-themeBorder text-zinc-400 hover:bg-zinc-850 hover:text-white transition duration-150">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+                        Add Edge
+                    </button>
+                    <button id="btn-tool-delete" class="flex items-center justify-center gap-2 py-2 px-3 text-xs font-semibold rounded-lg bg-zinc-900 border border-themeBorder text-zinc-400 hover:bg-zinc-850 hover:text-white transition duration-150">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                        Delete
+                    </button>
+                </div>
+
+                <div class="border-t border-themeBorder pt-4">
+                    <label class="block text-[10px] text-zinc-500 font-bold uppercase tracking-wider font-mono mb-2">Graph Mode</label>
+                    <div class="grid grid-cols-2 gap-2 bg-zinc-950 p-1 rounded-lg border border-themeBorder">
+                        <button id="btn-mode-undirected" class="py-1.5 px-2 text-xs font-bold rounded bg-zinc-800 text-white">Undirected</button>
+                        <button id="btn-mode-directed" class="py-1.5 px-2 text-xs font-bold rounded text-zinc-500 hover:text-zinc-300">Directed</button>
+                    </div>
+                </div>
+
+                <div class="border-t border-themeBorder pt-4">
+                    <label class="block text-[10px] text-zinc-500 font-bold uppercase tracking-wider font-mono mb-2">Preset Topologies</label>
+                    <select id="select-preset" class="w-full bg-zinc-950 border border-themeBorder rounded-lg px-3 py-2 text-xs text-zinc-300 focus:outline-none focus:border-accentCyan">
+                        <option value="default">Default Weighted Demo</option>
+                        <option value="negative_cycle">Negative Cycle (Bellman-Ford)</option>
+                        <option value="complete">Complete Graph (K_5)</option>
+                        <option value="grid">Grid Network (2D)</option>
+                        <option value="mst_demo">MST Prim/Kruskal Demo</option>
+                        <option value="tsp_demo">TSP Spatial Nodes</option>
+                        <option value="empty">Clear Canvas (Empty)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Adjacency Matrix & Edge Editor -->
+            <div class="glass-card p-5 rounded-2xl flex-1 flex flex-col min-h-[300px]">
+                <div class="flex items-center justify-between border-b border-themeBorder pb-3 mb-4">
+                    <h3 class="text-sm font-bold text-zinc-300 uppercase tracking-widest font-mono">Graph Data</h3>
+                    <div class="flex bg-zinc-950 p-1 rounded-lg border border-themeBorder">
+                        <button id="tab-btn-matrix" class="py-1 px-3 text-[10px] font-bold rounded bg-zinc-800 text-white">Matrix</button>
+                        <button id="tab-btn-edges" class="py-1 px-3 text-[10px] font-bold rounded text-zinc-500 hover:text-zinc-300">Edge List</button>
+                    </div>
+                </div>
+
+                <!-- Matrix tab -->
+                <div id="tab-content-matrix" class="flex-1 flex flex-col overflow-hidden">
+                    <p class="text-xs text-zinc-500 mb-2 leading-relaxed">Modify weights directly in the grid. Zero (0) represents no edge connection.</p>
+                    <div class="flex-1 overflow-auto border border-themeBorder rounded-lg bg-zinc-950/80 p-2" id="matrix-container">
+                        <!-- Generates dynamically -->
+                    </div>
+                </div>
+
+                <!-- Edges List tab -->
+                <div id="tab-content-edges" class="flex-1 flex flex-col hidden overflow-hidden">
+                    <p class="text-xs text-zinc-500 mb-2 leading-relaxed">Specify edges format: <code>[NodeA] [NodeB] [Weight]</code>, one per line.</p>
+                    <textarea id="edges-textarea" class="flex-1 w-full bg-zinc-950 border border-themeBorder rounded-lg p-3 text-xs font-mono text-zinc-300 focus:outline-none focus:border-accentCyan resize-none" placeholder="A B 5&#10;B C 2&#10;C A 10"></textarea>
+                    <button id="btn-apply-edges" class="mt-3 w-full py-2 bg-zinc-900 border border-themeBorder hover:bg-zinc-850 hover:border-zinc-700 text-xs font-bold text-accentCyan rounded-lg transition duration-150">
+                        Apply Changes
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Center Workspace: Interactive Canvas -->
+        <div class="col-span-12 lg:col-span-6 flex flex-col gap-6">
+            
+            <!-- Canvas Window -->
+            <div class="glass-card rounded-2xl overflow-hidden flex flex-col h-[600px] relative">
+                <div class="px-5 py-3 border-b border-themeBorder flex items-center justify-between bg-zinc-900/50">
+                    <div class="flex items-center space-x-2">
+                        <span class="w-2.5 h-2.5 rounded-full bg-accentCyan animate-pulse"></span>
+                        <span class="text-xs font-bold font-mono text-zinc-400">GRAPH CANVAS</span>
+                    </div>
+                    <div class="flex items-center space-x-2 text-xs text-zinc-500" id="canvas-status">
+                        Double-click empty space to create node
+                    </div>
+                </div>
+                
+                <div class="flex-1 bg-zinc-950 relative overflow-hidden canvas-container" id="canvas-parent">
+                    <!-- Instruction Overlays / Zoom indicators -->
+                    <div class="absolute bottom-4 left-4 z-10 bg-zinc-900/90 border border-themeBorder px-3 py-1.5 rounded-lg text-[10px] font-mono text-zinc-400 flex flex-col gap-1 shadow-lg">
+                        <div>Drag: Move Node</div>
+                        <div>Shift+Drag: Connect Nodes</div>
+                        <div>Wheel: Zoom / Drag Canvas: Pan</div>
+                    </div>
+
+                    <div class="absolute top-4 right-4 z-10 flex flex-col gap-2">
+                        <button id="btn-zoom-in" class="w-8 h-8 rounded-lg bg-zinc-900/90 border border-themeBorder flex items-center justify-center hover:bg-zinc-800 text-white font-bold">+</button>
+                        <button id="btn-zoom-out" class="w-8 h-8 rounded-lg bg-zinc-900/90 border border-themeBorder flex items-center justify-center hover:bg-zinc-800 text-white font-bold">-</button>
+                        <button id="btn-zoom-reset" class="w-8 h-8 rounded-lg bg-zinc-900/90 border border-themeBorder flex items-center justify-center hover:bg-zinc-800 text-xs font-bold text-zinc-400">1:1</button>
+                    </div>
+
+                    <canvas id="graph-canvas" class="w-full h-full cursor-grab"></canvas>
+                </div>
+            </div>
+
+            <!-- Algorithm Execution Controls -->
+            <div class="glass-card p-5 rounded-2xl flex flex-col gap-4">
+                <div class="flex flex-wrap items-center justify-between gap-4">
+                    <!-- Controls -->
+                    <div class="flex items-center gap-2">
+                        <button id="btn-alg-prev" class="p-2 rounded-lg bg-zinc-900 border border-themeBorder text-zinc-400 hover:text-white hover:bg-zinc-850 disabled:opacity-50 transition" title="Step Backward">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+                        </button>
+                        <button id="btn-alg-play" class="py-2 px-5 rounded-lg bg-accentCyan text-themeBg font-bold text-xs flex items-center gap-2 hover:bg-[#08d4f7] transition shadow-md shadow-accentCyan/10">
+                            <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                            <span>Run Animation</span>
+                        </button>
+                        <button id="btn-alg-next" class="p-2 rounded-lg bg-zinc-900 border border-themeBorder text-zinc-400 hover:text-white hover:bg-zinc-850 disabled:opacity-50 transition" title="Step Forward">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                        </button>
+                        <button id="btn-alg-stop" class="p-2 rounded-lg bg-zinc-900 border border-themeBorder text-zinc-400 hover:text-accentRose hover:bg-zinc-850 transition" title="Reset">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4h16v16H4z"/></svg>
+                        </button>
+                    </div>
+
+                    <!-- Speed Control -->
+                    <div class="flex items-center gap-3">
+                        <span class="text-[10px] text-zinc-500 font-bold uppercase tracking-wider font-mono">Speed</span>
+                        <input id="slider-speed" type="range" min="100" max="2000" value="800" class="w-32 accent-accentCyan bg-zinc-900 rounded-lg appearance-none cursor-pointer h-1.5">
+                        <span id="label-speed" class="text-xs font-mono text-zinc-300 w-12 text-right">800ms</span>
+                    </div>
+                </div>
+
+                <!-- Timeline Scrubber -->
+                <div class="flex items-center gap-4 border-t border-themeBorder/40 pt-4">
+                    <span class="text-[10px] text-zinc-500 font-bold uppercase tracking-wider font-mono">Timeline</span>
+                    <input id="slider-timeline" type="range" min="0" max="0" value="0" class="flex-1 accent-accentIndigo bg-zinc-900 rounded-lg appearance-none cursor-pointer h-1.5" disabled>
+                    <span id="label-timeline" class="text-xs font-mono text-zinc-300 min-w-[45px] text-right">0 / 0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side: Engine Config & Live State Inspector -->
+        <div class="col-span-12 lg:col-span-3 flex flex-col gap-6">
+            
+            <!-- Algorithm Selection & Start Node -->
+            <div class="glass-card p-5 rounded-2xl flex flex-col gap-4">
+                <h3 class="text-sm font-bold text-zinc-300 uppercase tracking-widest font-mono">Algorithm Engine</h3>
+                
+                <div>
+                    <label class="block text-[10px] text-zinc-500 font-bold uppercase tracking-wider font-mono mb-2">Algorithm</label>
+                    <select id="select-algorithm" class="w-full bg-zinc-950 border border-themeBorder rounded-lg px-3 py-2 text-xs text-zinc-300 focus:outline-none focus:border-accentCyan">
+                        <option value="dijkstra">Dijkstra's (Shortest Path)</option>
+                        <option value="astar">A* (Heuristic Search)</option>
+                        <option value="kruskal">Kruskal's (Minimum Spanning Tree)</option>
+                        <option value="prim">Prim's (Minimum Spanning Tree)</option>
+                        <option value="bellman_ford">Bellman-Ford (Neg. Weights/Cycle)</option>
+                        <option value="bfs">BFS (Breadth-First Search)</option>
+                        <option value="dfs">DFS (Depth-First Search)</option>
+                        <option value="tsp">TSP (Travelling Salesperson Approximation)</option>
+                    </select>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3" id="node-selector-container">
+                    <div>
+                        <label class="block text-[10px] text-zinc-500 font-bold uppercase tracking-wider font-mono mb-2">Start Node</label>
+                        <select id="select-start-node" class="w-full bg-zinc-950 border border-themeBorder rounded-lg px-3 py-2 text-xs text-zinc-300 focus:outline-none focus:border-accentCyan">
+                            <!-- Populated dynamically -->
+                        </select>
+                    </div>
+                    <div id="target-node-wrapper">
+                        <label class="block text-[10px] text-zinc-500 font-bold uppercase tracking-wider font-mono mb-2">Target Node</label>
+                        <select id="select-target-node" class="w-full bg-zinc-950 border border-themeBorder rounded-lg px-3 py-2 text-xs text-zinc-300 focus:outline-none focus:border-accentCyan">
+                            <!-- Populated dynamically -->
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dynamic State Inspector -->
+            <div class="glass-card p-5 rounded-2xl flex-1 flex flex-col min-h-[350px]">
+                <h3 class="text-sm font-bold text-zinc-300 uppercase tracking-widest font-mono mb-3">State Inspector</h3>
+                
+                <div class="flex-1 flex flex-col gap-4 overflow-hidden">
+                    <!-- Current Action Log -->
+                    <div class="bg-zinc-950 border border-themeBorder rounded-lg p-3 text-xs leading-relaxed text-zinc-300" id="state-description">
+                        Select an algorithm and click "Run Animation" to begin.
+                    </div>
+
+                    <!-- Structures/Variables Visualized -->
+                    <div class="flex-1 flex flex-col overflow-hidden border border-themeBorder rounded-lg bg-zinc-950/80 p-3 font-mono text-[11px]">
+                        <span class="text-[9px] text-zinc-500 uppercase tracking-wider font-bold mb-2">Internal Storage & Operations</span>
+                        <div id="state-data-structures" class="flex-1 overflow-auto space-y-3 pr-1 text-zinc-400">
+                            <!-- Dynamically generated variables -->
+                            <div>No execution trace running.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pseudocode Panel -->
+            <div class="glass-card p-5 rounded-2xl flex flex-col h-[280px]">
+                <h3 class="text-sm font-bold text-zinc-300 uppercase tracking-widest font-mono mb-3">Live Pseudocode</h3>
+                <div class="flex-1 bg-zinc-950 border border-themeBorder rounded-lg p-3 font-mono text-[11px] overflow-auto text-zinc-400 select-none" id="pseudocode-container">
+                    <!-- Populated dynamically based on selected algorithm -->
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="w-full border-t border-themeBorder py-4 text-center text-xs text-zinc-500 font-mono">
+        &copy; 2026 AetherLink Engine. Running in high-performance WebGL / Canvas emulation mode.
+    </footer>
+
+    <!-- App Logic Script -->
+    <script>
+        // --- 1. Graph State Model ---
+        const Graph = {
+            nodes: [],
+            edges: [],
+            isDirected: false,
+            
+            clear() {
+                this.nodes = [];
+                this.edges = [];
+                this.saveToStorage();
+            },
+
+            addNode(id, x, y, name = id, heuristic = 0) {
+                if (this.nodes.some(n => n.id === id)) return false;
+                this.nodes.push({ id, name, x, y, heuristic, color: null });
+                this.saveToStorage();
+                return true;
+            },
+
+            removeNode(id) {
+                this.nodes = this.nodes.filter(n => n.id !== id);
+                this.edges = this.edges.filter(e => e.source !== id && e.target !== id);
+                this.saveToStorage();
+            },
+
+            addEdge(source, target, weight, directed = false) {
+                if (source === target) return false;
+                // Avoid duplicates
+                const exists = this.edges.some(e => 
+                    (e.source === source && e.target === target) ||
+                    (!directed && e.source === target && e.target === source)
+                );
+                if (exists) return false;
+
+                this.edges.push({
+                    source,
+                    target,
+                    weight: parseFloat(weight),
+                    directed
+                });
+                this.saveToStorage();
+                return true;
+            },
+
+            removeEdge(source, target) {
+                this.edges = this.edges.filter(e => !(e.source === source && e.target === target));
+                this.saveToStorage();
+            },
+
+            updateEdgeWeight(source, target, weight) {
+                const edge = this.edges.find(e => 
+                    (e.source === source && e.target === target) ||
+                    (!this.isDirected && e.source === target && e.target === source)
+                );
+                if (edge) {
+                    edge.weight = parseFloat(weight);
+                    this.saveToStorage();
+                }
+            },
+
+            saveToStorage() {
+                localStorage.setItem('aetherlink_graph', JSON.stringify({
+                    nodes: this.nodes,
+                    edges: this.edges,
+                    isDirected: this.isDirected
+                }));
+            },
+
+            loadFromStorage() {
+                const stored = localStorage.getItem('aetherlink_graph');
+                if (stored) {
+                    try {
+                        const parsed = JSON.parse(stored);
+                        this.nodes = parsed.nodes || [];
+                        this.edges = parsed.edges || [];
+                        this.isDirected = !!parsed.isDirected;
+                        return true;
+                    } catch (e) {
+                        console.error("Failed to load graph from storage", e);
+                    }
+                }
+                return false;
+            }
+        };
+
+        // --- 2. Canvas Rendering Engine ---
+        const CanvasEngine = {
+            canvas: null,
+            ctx: null,
+            parent: null,
+            zoom: 1.0,
+            panX: 0,
+            panY: 0,
+            isPanning: false,
+            draggedNode: null,
+            dragStartPos: { x: 0, y: 0 },
+            mousePos: { x: 0, y: 0 },
+            selectedNode: null,
+            activeTool: 'select', // 'select', 'add-node', 'add-edge', 'delete'
+            connectingSource: null,
+
+            // Visual styles
+            theme: {
+                bg: '#09090b',
+                grid: 'rgba(255, 255, 255, 0.02)',
+                border: 'rgba(255, 255, 255, 0.08)',
+                nodeDefault: '#18181b',
+                nodeBorder: 'rgba(255, 255, 255, 0.15)',
+                nodeSelected: '#6366f1',
+                text: '#fafafa',
+                textMuted: '#71717a',
+                edgeDefault: 'rgba(255, 255, 255, 0.15)',
+                edgeHighlight: '#06b6d4',
+                edgeFinal: '#10b981',
+                edgeNeg: '#f43f5e'
+            },
+
+            init(canvasId, parentId) {
+                this.canvas = document.getElementById(canvasId);
+                this.ctx = this.canvas.getContext('2d');
+                this.parent = document.getElementById(parentId);
+
+                this.resize();
+                window.addEventListener('resize', () => this.resize());
+
+                this.setupEvents();
+            },
+
+            resize() {
+                const rect = this.parent.getBoundingClientRect();
+                this.canvas.width = rect.width * window.devicePixelRatio;
+                this.canvas.height = rect.height * window.devicePixelRatio;
+                this.canvas.style.width = `${rect.width}px`;
+                this.canvas.style.height = `${rect.height}px`;
+                this.ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+                this.draw();
+            },
+
+            toCanvasCoords(clientX, clientY) {
+                const rect = this.canvas.getBoundingClientRect();
+                const x = (clientX - rect.left - this.panX) / this.zoom;
+                const y = (clientY - rect.top - this.panY) / this.zoom;
+                return { x, y };
+            },
+
+            getNodeAt(x, y) {
+                const nodeRadius = 24;
+                return Graph.nodes.find(n => {
+                    const dx = n.x - x;
+                    const dy = n.y - y;
+                    return (dx * dx + dy * dy) <= (nodeRadius * nodeRadius);
+                });
+            },
+
+            getEdgeAt(x, y) {
+                // Determine if a point is close to any line segment
+                const threshold = 10;
+                for (let e of Graph.edges) {
+                    const n1 = Graph.nodes.find(n => n.id === e.source);
+                    const n2 = Graph.nodes.find(n => n.id === e.target);
+                    if (!n1 || !n2) continue;
+
+                    // Distance from point to line
+                    const l2 = (n1.x - n2.x)**2 + (n1.y - n2.y)**2;
+                    if (l2 === 0) continue;
+                    let t = ((x - n1.x) * (n2.x - n1.x) + (y - n1.y) * (n2.y - n1.y)) / l2;
+                    t = Math.max(0, Math.min(1, t));
+                    const projectionX = n1.x + t * (n2.x - n1.x);
+                    const projectionY = n1.y + t * (n2.y - n1.y);
+                    const dist2 = (x - projectionX)**2 + (y - projectionY)**2;
+                    if (dist2 < threshold * threshold) {
+                        return e;
+                    }
+                }
+                return null;
+            },
+
+            setupEvents() {
+                this.canvas.addEventListener('mousedown', (e) => {
+                    const coords = this.toCanvasCoords(e.clientX, e.clientY);
+                    const hitNode = this.getNodeAt(coords.x, coords.y);
+
+                    if (this.activeTool === 'select') {
+                        if (hitNode) {
+                            if (e.shiftKey) {
+                                // Draw edge trigger
+                                this.connectingSource = hitNode;
+                            } else {
+                                this.draggedNode = hitNode;
+                                this.dragStartPos = { x: coords.x - hitNode.x, y: coords.y - hitNode.y };
+                                this.selectedNode = hitNode;
+                                selectNode(hitNode);
+                            }
+                        } else {
+                            this.isPanning = true;
+                            this.dragStartPos = { x: e.clientX - this.panX, y: e.clientY - this.panY };
+                            this.selectedNode = null;
+                            unselectNode();
+                        }
+                    } else if (this.activeTool === 'add-node') {
+                        if (!hitNode) {
+                            const newId = generateNodeId();
+                            Graph.addNode(newId, coords.x, coords.y);
+                            updateSelectors();
+                            syncMatrixUI();
+                        }
+                    } else if (this.activeTool === 'add-edge') {
+                        if (hitNode) {
+                            if (!this.connectingSource) {
+                                this.connectingSource = hitNode;
+                            } else {
+                                Graph.addEdge(this.connectingSource.id, hitNode.id, 1, Graph.isDirected);
+                                this.connectingSource = null;
+                                syncMatrixUI();
+                            }
+                        } else {
+                            this.connectingSource = null;
+                        }
+                    } else if (this.activeTool === 'delete') {
+                        if (hitNode) {
+                            Graph.removeNode(hitNode.id);
+                            updateSelectors();
+                            syncMatrixUI();
+                        } else {
+                            const hitEdge = this.getEdgeAt(coords.x, coords.y);
+                            if (hitEdge) {
+                                Graph.removeEdge(hitEdge.source, hitEdge.target);
+                                syncMatrixUI();
+                            }
+                        }
+                    }
+                    this.draw();
+                });
+
+                this.canvas.addEventListener('mousemove', (e) => {
+                    const coords = this.toCanvasCoords(e.clientX, e.clientY);
+                    this.mousePos = coords;
+
+                    if (this.isPanning) {
+                        this.panX = e.clientX - this.dragStartPos.x;
+                        this.panY = e.clientY - this.dragStartPos.y;
+                        this.draw();
+                    } else if (this.draggedNode) {
+                        this.draggedNode.x = coords.x - this.dragStartPos.x;
+                        this.draggedNode.y = coords.y - this.dragStartPos.y;
+                        this.draw();
+                    } else if (this.connectingSource) {
+                        this.draw(); // redraw temporary connecting line
+                    }
+                });
+
+                this.canvas.addEventListener('mouseup', () => {
+                    if (this.draggedNode) Graph.saveToStorage();
+                    this.draggedNode = null;
+                    this.isPanning = false;
+                    if (this.activeTool === 'select' && this.connectingSource) {
+                        // If shift-drag connects
+                        const endNode = this.getNodeAt(this.mousePos.x, this.mousePos.y);
+                        if (endNode && endNode !== this.connectingSource) {
+                            Graph.addEdge(this.connectingSource.id, endNode.id, 1, Graph.isDirected);
+                            syncMatrixUI();
+                        }
+                        this.connectingSource = null;
+                    }
+                    this.draw();
+                });
+
+                this.canvas.addEventListener('wheel', (e) => {
+                    e.preventDefault();
+                    const zoomFactor = 1.1;
+                    const rect = this.canvas.getBoundingClientRect();
+                    const mouseX = e.clientX - rect.left;
+                    const mouseY = e.clientY - rect.top;
+
+                    // Locate cursor in coordinate space
+                    const wheelX = (mouseX - this.panX) / this.zoom;
+                    const wheelY = (mouseY - this.panY) / this.zoom;
+
+                    if (e.deltaY < 0) {
+                        this.zoom *= zoomFactor;
+                    } else {
+                        this.zoom /= zoomFactor;
+                    }
+                    
+                    // Re-pan to keep cursor centered
+                    this.panX = mouseX - wheelX * this.zoom;
+                    this.panY = mouseY - wheelY * this.zoom;
+
+                    this.draw();
+                });
+
+                this.canvas.addEventListener('dblclick', (e) => {
+                    const coords = this.toCanvasCoords(e.clientX, e.clientY);
+                    const hitNode = this.getNodeAt(coords.x, coords.y);
+                    if (!hitNode && this.activeTool === 'select') {
+                        const newId = generateNodeId();
+                        Graph.addNode(newId, coords.x, coords.y);
+                        updateSelectors();
+                        syncMatrixUI();
+                        this.draw();
+                    }
+                });
+            },
+
+            draw() {
+                if (!this.canvas) return;
+                const width = this.canvas.width / window.devicePixelRatio;
+                const height = this.canvas.height / window.devicePixelRatio;
+                this.ctx.clearRect(0, 0, width, height);
+
+                this.ctx.save();
+                this.ctx.translate(this.panX, this.panY);
+                this.ctx.scale(this.zoom, this.zoom);
+
+                // 1. Draw Grid lines
+                this.drawGrid(width, height);
+
+                // 2. Draw active connecting line (during Shift+Drag or Add-Edge mode)
+                if (this.connectingSource) {
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(this.connectingSource.x, this.connectingSource.y);
+                    this.ctx.lineTo(this.mousePos.x, this.mousePos.y);
+                    this.ctx.strokeStyle = this.theme.edgeHighlight;
+                    this.ctx.lineWidth = 2;
+                    this.ctx.setLineDash([5, 5]);
+                    this.ctx.stroke();
+                    this.ctx.setLineDash([]);
+                }
+
+                // Decide whether to use step state or static graph
+                const activeNodes = this.activeGraphState ? this.activeGraphState.nodes : Graph.nodes;
+                const activeEdges = this.activeGraphState ? this.activeGraphState.edges : Graph.edges;
+
+                // 3. Draw Edges
+                activeEdges.forEach(e => {
+                    const n1 = activeNodes.find(n => n.id === e.source);
+                    const n2 = activeNodes.find(n => n.id === e.target);
+                    if (n1 && n2) {
+                        this.drawEdge(n1, n2, e);
+                    }
+                });
+
+                // 4. Draw Nodes
+                activeNodes.forEach(n => {
+                    this.drawNode(n);
+                });
+
+                this.ctx.restore();
+            },
+
+            drawGrid(w, h) {
+                const size = 40;
+                const left = -this.panX / this.zoom;
+                const top = -this.panY / this.zoom;
+                const right = (w - this.panX) / this.zoom;
+                const bottom = (h - this.panY) / this.zoom;
+
+                this.ctx.strokeStyle = this.theme.grid;
+                this.ctx.lineWidth = 1;
+
+                const startX = Math.floor(left / size) * size;
+                const startY = Math.floor(top / size) * size;
+
+                for (let x = startX; x < right; x += size) {
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(x, top);
+                    this.ctx.lineTo(x, bottom);
+                    this.ctx.stroke();
+                }
+
+                for (let y = startY; y < bottom; y += size) {
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(left, y);
+                    this.ctx.lineTo(right, y);
+                    this.ctx.stroke();
+                }
+            },
+
+            drawNode(n) {
+                const isSelected = this.selectedNode && this.selectedNode.id === n.id;
+                this.ctx.beginPath();
+                this.ctx.arc(n.x, n.y, 20, 0, 2 * Math.PI);
+                
+                // Color configuration depending on algorithm evaluation state
+                if (n.color) {
+                    this.ctx.fillStyle = n.color;
+                } else {
+                    this.ctx.fillStyle = isSelected ? this.theme.nodeSelected : this.theme.nodeDefault;
+                }
+                
+                this.ctx.fill();
+                this.ctx.strokeStyle = isSelected ? '#ffffff' : this.theme.nodeBorder;
+                this.ctx.lineWidth = isSelected ? 3 : 2;
+                this.ctx.stroke();
+
+                // Draw Text Label
+                this.ctx.fillStyle = this.theme.text;
+                this.ctx.font = 'bold 12px "JetBrains Mono", monospace';
+                this.ctx.textAlign = 'center';
+                this.ctx.textBaseline = 'middle';
+                this.ctx.fillText(n.name, n.x, n.y);
+
+                // Draw weight/heuristic if present or configured
+                if (n.heuristic > 0) {
+                    this.ctx.fillStyle = this.theme.textMuted;
+                    this.ctx.font = '10px "JetBrains Mono"';
+                    this.ctx.fillText(`h=${n.heuristic}`, n.x, n.y - 30);
+                }
+            },
+
+            drawEdge(n1, n2, edge) {
+                const angle = Math.atan2(n2.y - n1.y, n2.x - n1.x);
+                const nodeRadius = 20;
+
+                // Adjust positions to stop at node boundaries
+                const startX = n1.x + nodeRadius * Math.cos(angle);
+                const startY = n1.y + nodeRadius * Math.sin(angle);
+                const endX = n2.x - nodeRadius * Math.cos(angle);
+                const endY = n2.y - nodeRadius * Math.sin(angle);
+
+                this.ctx.beginPath();
+                this.ctx.moveTo(startX, startY);
+                this.ctx.lineTo(endX, endY);
+
+                // Choose color
+                let strokeColor = this.theme.edgeDefault;
+                let lineWidth = 1.5;
+                if (edge.color) {
+                    strokeColor = edge.color;
+                    lineWidth = 3;
+                } else if (edge.weight < 0) {
+                    strokeColor = this.theme.edgeNeg; // highlight negative paths
+                }
+
+                this.ctx.strokeStyle = strokeColor;
+                this.ctx.lineWidth = lineWidth;
+                this.ctx.stroke();
+
+                // Draw Arrowhead if directed
+                if (edge.directed) {
+                    const arrowLength = 10;
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(endX, endY);
+                    this.ctx.lineTo(
+                        endX - arrowLength * Math.cos(angle - Math.PI / 6),
+                        endY - arrowLength * Math.sin(angle - Math.PI / 6)
+                    );
+                    this.ctx.lineTo(
+                        endX - arrowLength * Math.cos(angle + Math.PI / 6),
+                        endY - arrowLength * Math.sin(angle + Math.PI / 6)
+                    );
+                    this.ctx.closePath();
+                    this.ctx.fillStyle = strokeColor;
+                    this.ctx.fill();
+                }
+
+                // Draw Edge Weight
+                const midX = (n1.x + n2.x) / 2;
+                const midY = (n1.y + n2.y) / 2;
+                
+                // Background bubble for weight
+                this.ctx.beginPath();
+                this.ctx.arc(midX, midY, 11, 0, 2 * Math.PI);
+                this.ctx.fillStyle = '#09090b';
+                this.ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+                this.ctx.lineWidth = 1;
+                this.ctx.fill();
+                this.ctx.stroke();
+
+                this.ctx.fillStyle = edge.color ? edge.color : this.theme.text;
+                this.ctx.font = '10px "JetBrains Mono", monospace';
+                this.ctx.textAlign = 'center';
+                this.ctx.textBaseline = 'middle';
+                this.ctx.fillText(edge.weight.toString(), midX, midY);
+            }
+        };
+
+        // Node ID Generator utility
+        let idCounter = 1;
+        function generateNodeId() {
+            let label;
+            do {
+                label = getCharLabel(idCounter++);
+            } while (Graph.nodes.some(n => n.id === label));
+            return label;
+        }
+
+        function getCharLabel(num) {
+            let label = "";
+            while (num > 0) {
+                let temp = (num - 1) % 26;
+                label = String.fromCharCode(65 + temp) + label;
+                num = Math.floor((num - temp) / 26);
+            }
+            return label;
+        }
+
+        // --- 3. UI Sync & Interactivity Managers ---
+        function selectNode(node) {
+            // Unused here but could populate properties editor
+        }
+        function unselectNode() {}
+
+        function updateSelectors() {
+            const startSelect = document.getElementById('select-start-node');
+            const targetSelect = document.getElementById('select-target-node');
+            
+            const startVal = startSelect.value;
+            const targetVal = targetSelect.value;
+
+            startSelect.innerHTML = "";
+            targetSelect.innerHTML = "";
+
+            Graph.nodes.forEach(n => {
+                const opt1 = document.createElement('option');
+                opt1.value = n.id;
+                opt1.textContent = n.name;
+                startSelect.appendChild(opt1);
+
+                const opt2 = document.createElement('option');
+                opt2.value = n.id;
+                opt2.textContent = n.name;
+                targetSelect.appendChild(opt2);
+            });
+
+            if (Graph.nodes.some(n => n.id === startVal)) startSelect.value = startVal;
+            if (Graph.nodes.some(n => n.id === targetVal)) targetSelect.value = targetVal;
+        }
+
+        function syncMatrixUI() {
+            const container = document.getElementById('matrix-container');
+            container.innerHTML = "";
+
+            if (Graph.nodes.length === 0) {
+                container.innerHTML = `<div class="text-zinc-600 text-xs p-4">Add nodes to see matrix representation.</div>`;
+                return;
+            }
+
+            // Create Grid Table
+            const table = document.createElement('table');
+            table.className = "w-full text-left border-collapse text-[10px]";
+
+            // Header row
+            const trHeader = document.createElement('tr');
+            const thEmpty = document.createElement('th');
+            thEmpty.className = "p-1 border border-white/5 text-zinc-500 font-mono text-center";
+            trHeader.appendChild(thEmpty);
+
+            Graph.nodes.forEach(n => {
+                const th = document.createElement('th');
+                th.className = "p-1 border border-white/5 text-zinc-300 font-mono font-bold text-center";
+                th.textContent = n.name;
+                trHeader.appendChild(th);
+            });
+            table.appendChild(trHeader);
+
+            // Matrix cells
+            Graph.nodes.forEach((rowNode) => {
+                const tr = document.createElement('tr');
+                const tdLabel = document.createElement('td');
+                tdLabel.className = "p-1 border border-white/5 text-zinc-300 font-mono font-bold text-center";
+                tdLabel.textContent = rowNode.name;
+                tr.appendChild(tdLabel);
+
+                Graph.nodes.forEach((colNode) => {
+                    const td = document.createElement('td');
+                    td.className = "p-0.5 border border-white/5 text-center";
+
+                    const input = document.createElement('input');
+                    input.type = "text";
+                    input.className = "w-10 bg-zinc-900 text-center border-0 text-white font-mono focus:bg-zinc-800 focus:outline-none";
+
+                    // Determine current edge
+                    const edge = Graph.edges.find(e => 
+                        (e.source === rowNode.id && e.target === colNode.id) ||
+                        (!Graph.isDirected && ((e.source === colNode.id && e.target === rowNode.id)))
+                    );
+
+                    input.value = edge ? edge.weight : "0";
+
+                    // Update action on dynamic modification
+                    input.addEventListener('change', () => {
+                        const val = parseFloat(input.value);
+                        if (isNaN(val) || val === 0) {
+                            Graph.removeEdge(rowNode.id, colNode.id);
+                            if (!Graph.isDirected) Graph.removeEdge(colNode.id, rowNode.id);
+                        } else {
+                            if (edge) {
+                                Graph.updateEdgeWeight(rowNode.id, colNode.id, val);
+                            } else {
+                                Graph.addEdge(rowNode.id, colNode.id, val, Graph.isDirected);
+                            }
+                        }
+                        syncMatrixUI();
+                        CanvasEngine.draw();
+                    });
+
+                    td.appendChild(input);
+                    tr.appendChild(td);
+                });
+                table.appendChild(tr);
+            });
+
+            container.appendChild(table);
+
+            // Update Text Edges list sync
+            const textarea = document.getElementById('edges-textarea');
+            textarea.value = Graph.edges.map(e => `${e.source} ${e.target} ${e.weight}`).join('\n');
+        }
+
+        // Parse changes from text edge editor box
+        document.getElementById('btn-apply-edges').addEventListener('click', () => {
+            const lines = document.getElementById('edges-textarea').value.split('\n');
+            // Keep old coordinates
+            const oldCoords = {};
+            Graph.nodes.forEach(n => oldCoords[n.id] = { x: n.x, y: n.y, h: n.heuristic });
+
+            Graph.clear();
+
+            lines.forEach(line => {
+                const parts = line.trim().split(/\s+/);
+                if (parts.length < 2) return;
+                const src = parts[0].toUpperCase();
+                const dst = parts[1].toUpperCase();
+                const weight = parts[2] ? parseFloat(parts[2]) : 1;
+
+                if (!Graph.nodes.some(n => n.id === src)) {
+                    const coords = oldCoords[src] || { x: 100 + Math.random() * 300, y: 100 + Math.random() * 300, h: 0 };
+                    Graph.addNode(src, coords.x, coords.y, src, coords.h);
+                }
+                if (!Graph.nodes.some(n => n.id === dst)) {
+                    const coords = oldCoords[dst] || { x: 100 + Math.random() * 300, y: 100 + Math.random() * 300, h: 0 };
+                    Graph.addNode(dst, coords.x, coords.y, dst, coords.h);
+                }
+                Graph.addEdge(src, dst, weight, Graph.isDirected);
+            });
+
+            updateSelectors();
+            syncMatrixUI();
+            CanvasEngine.draw();
+        });
+
+        // Tab selection handler
+        document.getElementById('tab-btn-matrix').addEventListener('click', () => {
+            document.getElementById('tab-btn-matrix').className = "py-1 px-3 text-[10px] font-bold rounded bg-zinc-800 text-white";
+            document.getElementById('tab-btn-edges').className = "py-1 px-3 text-[10px] font-bold rounded text-zinc-500 hover:text-zinc-300";
+            document.getElementById('tab-content-matrix').classList.remove('hidden');
+            document.getElementById('tab-content-edges').classList.add('hidden');
+        });
+
+        document.getElementById('tab-btn-edges').addEventListener('click', () => {
+            document.getElementById('tab-btn-edges').className = "py-1 px-3 text-[10px] font-bold rounded bg-zinc-800 text-white";
+            document.getElementById('tab-btn-matrix').className = "py-1 px-3 text-[10px] font-bold rounded text-zinc-500 hover:text-zinc-300";
+            document.getElementById('tab-content-edges').classList.remove('hidden');
+            document.getElementById('tab-content-matrix').classList.add('hidden');
+        });
+
+        // Global Toolbar Action Bindings
+        const toolButtons = {
+            'select': document.getElementById('btn-tool-select'),
+            'add-node': document.getElementById('btn-tool-add-node'),
+            'add-edge': document.getElementById('btn-tool-add-edge'),
+            'delete': document.getElementById('btn-tool-delete')
+        };
+
+        function setTool(tool) {
+            CanvasEngine.activeTool = tool;
+            Object.keys(toolButtons).forEach(k => {
+                if (k === tool) {
+                    toolButtons[k].className = "flex items-center justify-center gap-2 py-2 px-3 text-xs font-semibold rounded-lg bg-accentIndigo text-white transition duration-150";
+                } else {
+                    toolButtons[k].className = "flex items-center justify-center gap-2 py-2 px-3 text-xs font-semibold rounded-lg bg-zinc-900 border border-themeBorder text-zinc-400 hover:bg-zinc-850 hover:text-white transition duration-150";
+                }
+            });
+            
+            // Set canvas cursor appropriately
+            if (tool === 'select') CanvasEngine.canvas.className = "w-full h-full cursor-grab";
+            else if (tool === 'delete') CanvasEngine.canvas.className = "w-full h-full cursor-no-drop";
+            else CanvasEngine.canvas.className = "w-full h-full cursor-crosshair";
+        }
+
+        toolButtons['select'].addEventListener('click', () => setTool('select'));
+        toolButtons['add-node'].addEventListener('click', () => setTool('add-node'));
+        toolButtons['add-edge'].addEventListener('click', () => setTool('add-edge'));
+        toolButtons['delete'].addEventListener('click', () => setTool('delete'));
+
+        // Zoom Panel
+        document.getElementById('btn-zoom-in').addEventListener('click', () => { CanvasEngine.zoom *= 1.1; CanvasEngine.draw(); });
+        document.getElementById('btn-zoom-out').addEventListener('click', () => { CanvasEngine.zoom /= 1.1; CanvasEngine.draw(); });
+        document.getElementById('btn-zoom-reset').addEventListener('click', () => { CanvasEngine.zoom = 1.0; CanvasEngine.panX = 0; CanvasEngine.panY = 0; CanvasEngine.draw(); });
+
+        // Directed/Undirected selection
+        const btnUndirected = document.getElementById('btn-mode-undirected');
+        const btnDirected = document.getElementById('btn-mode-directed');
+        btnUndirected.addEventListener('click', () => {
+            Graph.isDirected = false;
+            Graph.edges.forEach(e => e.directed = false);
+            btnUndirected.className = "py-1.5 px-2 text-xs font-bold rounded bg-zinc-800 text-white";
+            btnDirected.className = "py-1.5 px-2 text-xs font-bold rounded text-zinc-500 hover:text-zinc-300";
+            Graph.saveToStorage();
+            syncMatrixUI();
+            CanvasEngine.draw();
+        });
+        btnDirected.addEventListener('click', () => {
+            Graph.isDirected = true;
+            Graph.edges.forEach(e => e.directed = true);
+            btnDirected.className = "py-1.5 px-2 text-xs font-bold rounded text-zinc-500 hover:text-zinc-300";
+            btnUndirected.className = "py-1.5 px-2 text-xs font-bold rounded bg-zinc-800 text-white";
+            Graph.saveToStorage();
+            syncMatrixUI();
+            CanvasEngine.draw();
+        });
+
+
+        // --- 4. The Algorithm Engine (Debugger/Executor) ---
+        const AlgEngine = {
+            trace: [],          // Timeline history of states
+            currentStep: 0,
+            isPlaying: false,
+            intervalId: null,
+            speed: 800,
+
+            // Visual elements
+            colors: {
+                unvisited: null,
+                visiting: '#8b5cf6', // Violet
+                visited: 'rgba(99, 102, 241, 0.4)', // Faded Indigo
+                frontier: '#06b6d4', // Cyan
+                finished: '#10b981', // Emerald
+                highlight: '#f43f5e', // Rose
+            },
+
+            loadPseudocode(alg) {
+                const container = document.getElementById('pseudocode-container');
+                container.innerHTML = "";
+                
+                const lines = this.getPseudocode(alg);
+                lines.forEach((line, idx) => {
+                    const div = document.createElement('div');
+                    div.id = `code-line-${idx}`;
+                    div.className = "py-0.5 px-1 rounded flex";
+                    div.innerHTML = `<span class="text-zinc-600 w-6 select-none font-mono text-[9px]">${idx + 1}</span><span class="flex-1">${line}</span>`;
+                    container.appendChild(div);
+                });
+            },
+
+            highlightLine(lineIdx) {
+                const container = document.getElementById('pseudocode-container');
+                const active = container.querySelector('.bg-accentIndigo\\/20');
+                if (active) active.classList.remove('bg-accentIndigo/20', 'text-white', 'border-l-2', 'border-accentIndigo');
+                
+                const current = document.getElementById(`code-line-${lineIdx}`);
+                if (current) current.classList.add('bg-accentIndigo/20', 'text-white', 'border-l-2', 'border-accentIndigo');
+            },
+
+            getPseudocode(alg) {
+                switch(alg) {
+                    case 'dijkstra':
+                        return [
+                            "initialize distances to infinity, start = 0",
+                            "insert start node into PriorityQueue Q",
+                            "while Q is not empty:",
+                            "  u = extract_min(Q)",
+                            "  mark u as visited",
+                            "  for each neighbor v of u:",
+                            "    alt_dist = dist[u] + weight(u, v)",
+                            "    if alt_dist < dist[v]:",
+                            "      dist[v] = alt_dist",
+                            "      parent[v] = u",
+                            "      decrease_key/insert v in Q"
+                        ];
+                    case 'astar':
+                        return [
+                            "initialize g_score to infinity, f_score to inf",
+                            "g_score[start] = 0, f_score[start] = heuristic(start)",
+                            "insert start into OpenSet Q",
+                            "while Q is not empty:",
+                            "  u = node in Q with lowest f_score",
+                            "  if u == target: reconstruction path & finish",
+                            "  remove u from Q and mark closed",
+                            "  for each neighbor v of u:",
+                            "    temp_g = g_score[u] + weight(u, v)",
+                            "    if temp_g < g_score[v]:",
+                            "      g_score[v] = temp_g",
+                            "      f_score[v] = temp_g + heuristic(v)",
+                            "      parent[v] = u, insert/update v in Q"
+                        ];
+                    case 'kruskal':
+                        return [
+                            "sort all edges by weight ascending",
+                            "initialize DisjointSet forest (one set per node)",
+                            "for each edge (u, v) in sorted list:",
+                            "  if find(u) != find(v):",
+                            "    union(u, v)",
+                            "    add (u, v) to MST tree",
+                            "    if tree size == V - 1: terminate",
+                            "return MST"
+                        ];
+                    case 'prim':
+                        return [
+                            "initialize visited array to false",
+                            "insert start node into PriorityQueue Q with weight 0",
+                            "while Q is not empty and MST has < V nodes:",
+                            "  u = extract_min(Q)",
+                            "  if u is visited: continue",
+                            "  mark u as visited & add incoming edge to MST",
+                            "  for each neighbor v of u with edge weight w:",
+                            "    if v is not visited:",
+                            "      insert v into Q with weight w"
+                        ];
+                    case 'bellman_ford':
+                        return [
+                            "initialize dist to infinity, dist[start] = 0",
+                            "loop V-1 times:",
+                            "  for each edge (u, v) in G:",
+                            "    if dist[u] + w < dist[v]:",
+                            "      dist[v] = dist[u] + w, parent[v] = u",
+                            "loop once more to detect negative weight cycles:",
+                            "  for each edge (u, v) in G:",
+                            "    if dist[u] + w < dist[v]:",
+                            "      raise error: Negative Cycle Detected"
+                        ];
+                    case 'bfs':
+                        return [
+                            "initialize visited array to false",
+                            "push start node into Queue Q",
+                            "mark start node as visited",
+                            "while Q is not empty:",
+                            "  u = dequeue(Q)",
+                            "  if u == target: path found & terminate",
+                            "  for each unvisited neighbor v of u:",
+                            "    mark v as visited, parent[v] = u",
+                            "    enqueue v into Q"
+                        ];
+                    case 'dfs':
+                        return [
+                            "initialize visited array to false",
+                            "push start node into Stack S",
+                            "while S is not empty:",
+                            "  u = pop(S)",
+                            "  if u is visited: continue",
+                            "  mark u as visited",
+                            "  if u == target: path found & terminate",
+                            "  for each unvisited neighbor v of u:",
+                            "    parent[v] = u",
+                            "    push v into S"
+                        ];
+                    case 'tsp':
+                        return [
+                            "start at designated source node",
+                            "mark start node as visited",
+                            "current = start",
+                            "while there are unvisited nodes:",
+                            "  find closest unvisited neighbor v from current",
+                            "  add edge (current, v) to tour",
+                            "  mark v as visited, current = v",
+                            "add edge (current, start) to complete tour"
+                        ];
+                }
+            },
+
+            // Step creation helpers
+            cloneGraphState() {
+                return {
+                    nodes: Graph.nodes.map(n => ({...n, color: null})),
+                    edges: Graph.edges.map(e => ({...e, color: null}))
+                };
+            },
+
+            // --- 5. Implement Compilation of Algorithm Steps ---
+            generateTrace(alg, startId, targetId) {
+                this.trace = [];
+                const graphAdj = {};
+                
+                // Construct adjacency structure
+                Graph.nodes.forEach(n => graphAdj[n.id] = []);
+                Graph.edges.forEach(e => {
+                    graphAdj[e.source].push({ target: e.target, weight: e.weight, edge: e });
+                    if (!Graph.isDirected && !e.directed) {
+                        graphAdj[e.target].push({ target: e.source, weight: e.weight, edge: e });
+                    }
+                });
+
+                switch(alg) {
+                    case 'dijkstra':
+                        this.runDijkstra(startId, targetId, graphAdj);
+                        break;
+                    case 'astar':
+                        this.runAStar(startId, targetId, graphAdj);
+                        break;
+                    case 'bfs':
+                        this.runBFS(startId, targetId, graphAdj);
+                        break;
+                    case 'dfs':
+                        this.runDFS(startId, targetId, graphAdj);
+                        break;
+                    case 'kruskal':
+                        this.runKruskal(graphAdj);
+                        break;
+                    case 'prim':
+                        this.runPrim(startId, graphAdj);
+                        break;
+                    case 'bellman_ford':
+                        this.runBellmanFord(startId, graphAdj);
+                        break;
+                    case 'tsp':
+                        this.runTSP(startId, graphAdj);
+                        break;
+                }
+            },
+
+            runDijkstra(startId, targetId, adj) {
+                const distances = {};
+                const parents = {};
+                const pq = []; // Array sorted by distance for extraction
+                const visited = new Set();
+                
+                Graph.nodes.forEach(n => distances[n.id] = Infinity);
+                distances[startId] = 0;
+                pq.push({ id: startId, dist: 0 });
+
+                // Initial State
+                let state = this.cloneGraphState();
+                state.nodes.find(n => n.id === startId).color = this.colors.frontier;
+                this.trace.push({
+                    graphState: state,
+                    lineIdx: 0,
+                    description: `Initialize distances. Set distance to Start Node (${startId}) to 0, all others to ∞.`,
+                    structures: { distances: {...distances}, queue: pq.map(x => x.id) }
+                });
+
+                while (pq.length > 0) {
+                    // Extract min
+                    pq.sort((a,b) => a.dist - b.dist);
+                    const current = pq.shift();
+                    const u = current.id;
+
+                    if (visited.has(u)) continue;
+                    visited.add(u);
+
+                    let state = this.cloneGraphState();
+                    // Set visited colors
+                    visited.forEach(vid => {
+                        const n = state.nodes.find(node => node.id === vid);
+                        if (n) n.color = this.colors.visited;
+                    });
+                    const currNode = state.nodes.find(n => n.id === u);
+                    if (currNode) currNode.color = this.colors.visiting;
+
+                    this.trace.push({
+                        graphState: state,
+                        lineIdx: 3,
+                        description: `Extract node ${u} with minimum distance (${current.dist}) from Priority Queue.`,
+                        structures: { distances: {...distances}, queue: pq.map(x => x.id), visited: Array.from(visited) }
+                    });
+
+                    if (u === targetId) {
+                        // Reconstruct path
+                        let path = [];
+                        let curr = targetId;
+                        while (curr) {
+                            path.push(curr);
+                            curr = parents[curr];
+                        }
+                        path.reverse();
+
+                        let finalState = this.cloneGraphState();
+                        visited.forEach(vid => {
+                            const n = finalState.nodes.find(node => node.id === vid);
+                            if (n) n.color = this.colors.visited;
+                        });
+                        path.forEach(nodeId => {
+                            finalState.nodes.find(n => n.id === nodeId).color = this.colors.finished;
+                        });
+                        // Color edges on shortest path
+                        for (let i = 0; i < path.length - 1; i++) {
+                            const edge = finalState.edges.find(e => 
+                                (e.source === path[i] && e.target === path[i+1]) ||
+                                (!Graph.isDirected && e.source === path[i+1] && e.target === path[i])
+                            );
+                            if (edge) edge.color = this.colors.finished;
+                        }
+
+                        this.trace.push({
+                            graphState: finalState,
+                            lineIdx: 5,
+                            description: `Target node ${targetId} reached! Reconstructed Shortest Path: ${path.join(' → ')}. Total Cost: ${distances[targetId]}`,
+                            structures: { distances: {...distances}, path: path }
+                        });
+                        return;
+                    }
+
+                    // Process neighbors
+                    const neighbors = adj[u] || [];
+                    for (let edgeObj of neighbors) {
+                        const v = edgeObj.target;
+                        const w = edgeObj.weight;
+
+                        if (visited.has(v)) continue;
+
+                        const alt = distances[u] + w;
+                        
+                        let traceDesc = `Check neighbor ${v}. Current path distance to ${v} is ${distances[v]}. New alternate distance via ${u} is ${alt}.`;
+                        let line = 6;
+
+                        let stepState = this.cloneGraphState();
+                        visited.forEach(vid => {
+                            const n = stepState.nodes.find(node => node.id === vid);
+                            if (n) n.color = this.colors.visited;
+                        });
+                        stepState.nodes.find(n => n.id === u).color = this.colors.visiting;
+                        stepState.nodes.find(n => n.id === v).color = this.colors.frontier;
+                        
+                        // Highlight edge evaluated
+                        const evalEdge = stepState.edges.find(e => 
+                            (e.source === u && e.target === v) ||
+                            (!Graph.isDirected && e.source === v && e.target === u)
+                        );
+                        if (evalEdge) evalEdge.color = this.colors.highlight;
+
+                        if (alt < distances[v]) {
+                            distances[v] = alt;
+                            parents[v] = u;
+                            pq.push({ id: v, dist: alt });
+                            traceDesc += ` New path is shorter. Updating distance[${v}] = ${alt} and inserting to queue.`;
+                            line = 8;
+                        } else {
+                            traceDesc += ` Existing path is shorter. No update.`;
+                        }
+
+                        this.trace.push({
+                            graphState: stepState,
+                            lineIdx: line,
+                            description: traceDesc,
+                            structures: { distances: {...distances}, queue: pq.map(x => x.id) }
+                        });
+                    }
+                }
+
+                // If exited without target find
+                this.trace.push({
+                    graphState: this.cloneGraphState(),
+                    lineIdx: 10,
+                    description: `Queue empty. No path found between ${startId} and ${targetId}.`,
+                    structures: { distances: {...distances} }
+                });
+            },
+
+            runAStar(startId, targetId, adj) {
+                const gScore = {};
+                const fScore = {};
+                const parents = {};
+                const openSet = new Set([startId]);
+                const closedSet = new Set();
+
+                Graph.nodes.forEach(n => {
+                    gScore[n.id] = Infinity;
+                    fScore[n.id] = Infinity;
+                });
+                gScore[startId] = 0;
+                
+                const startNode = Graph.nodes.find(n => n.id === startId);
+                fScore[startId] = startNode ? startNode.heuristic : 0;
+
+                let state = this.cloneGraphState();
+                state.nodes.find(n => n.id === startId).color = this.colors.frontier;
+                this.trace.push({
+                    graphState: state,
+                    lineIdx: 1,
+                    description: `Set g_score[${startId}] = 0, f_score[${startId}] = heuristic(${startId}). Add ${startId} to open set.`,
+                    structures: { g_score: {...gScore}, f_score: {...fScore}, open_set: Array.from(openSet) }
+                });
+
+                while (openSet.size > 0) {
+                    // Get lowest f_score node
+                    let currentId = null;
+                    let lowestF = Infinity;
+                    openSet.forEach(nodeId => {
+                        if (fScore[nodeId] < lowestF) {
+                            lowestF = fScore[nodeId];
+                            currentId = nodeId;
+                        }
+                    });
+
+                    const u = currentId;
+                    openSet.delete(u);
+                    closedSet.add(u);
+
+                    let state = this.cloneGraphState();
+                    closedSet.forEach(cid => {
+                        const n = state.nodes.find(node => node.id === cid);
+                        if (n) n.color = this.colors.visited;
+                    });
+                    openSet.forEach(oid => {
+                        const n = state.nodes.find(node => node.id === oid);
+                        if (n) n.color = this.colors.frontier;
+                    });
+                    state.nodes.find(n => n.id === u).color = this.colors.visiting;
+
+                    this.trace.push({
+                        graphState: state,
+                        lineIdx: 4,
+                        description: `Extract node ${u} with lowest f_score (${lowestF}) from open set.`,
+                        structures: { g_score: {...gScore}, f_score: {...fScore}, open_set: Array.from(openSet), closed_set: Array.from(closedSet) }
+                    });
+
+                    if (u === targetId) {
+                        let path = [];
+                        let curr = targetId;
+                        while (curr) {
+                            path.push(curr);
+                            curr = parents[curr];
+                        }
+                        path.reverse();
+
+                        let finalState = this.cloneGraphState();
+                        closedSet.forEach(cid => {
+                            const n = finalState.nodes.find(node => node.id === cid);
+                            if (n) n.color = this.colors.visited;
+                        });
+                        path.forEach(nodeId => {
+                            finalState.nodes.find(n => n.id === nodeId).color = this.colors.finished;
+                        });
+                        for (let i = 0; i < path.length - 1; i++) {
+                            const edge = finalState.edges.find(e => 
+                                (e.source === path[i] && e.target === path[i+1]) ||
+                                (!Graph.isDirected && e.source === path[i+1] && e.target === path[i])
+                            );
+                            if (edge) edge.color = this.colors.finished;
+                        }
+
+                        this.trace.push({
+                            graphState: finalState,
+                            lineIdx: 5,
+                            description: `Target node ${targetId} reached! A* Optimal Path: ${path.join(' → ')}. Total Cost: ${gScore[targetId]}`,
+                            structures: { g_score: {...gScore}, path: path }
+                        });
+                        return;
+                    }
+
+                    const neighbors = adj[u] || [];
+                    for (let edgeObj of neighbors) {
+                        const v = edgeObj.target;
+                        if (closedSet.has(v)) continue;
+
+                        const tentativeG = gScore[u] + edgeObj.weight;
+                        let traceDesc = `Evaluate neighbor ${v} of ${u}. Tentative g_score is ${tentativeG}.`;
+                        let line = 8;
+
+                        let stepState = this.cloneGraphState();
+                        closedSet.forEach(cid => {
+                            const n = stepState.nodes.find(node => node.id === cid);
+                            if (n) n.color = this.colors.visited;
+                        });
+                        openSet.forEach(oid => {
+                            const n = stepState.nodes.find(node => node.id === oid);
+                            if (n) n.color = this.colors.frontier;
+                        });
+                        stepState.nodes.find(n => n.id === u).color = this.colors.visiting;
+                        stepState.nodes.find(n => n.id === v).color = this.colors.highlight;
+
+                        if (tentativeG < gScore[v]) {
+                            parents[v] = u;
+                            gScore[v] = tentativeG;
+                            const node = Graph.nodes.find(n => n.id === v);
+                            fScore[v] = tentativeG + (node ? node.heuristic : 0);
+                            openSet.add(v);
+                            traceDesc += ` Path to ${v} is cheaper! Update g_score to ${gScore[v]} and f_score to ${fScore[v]}.`;
+                            line = 10;
+                        } else {
+                            traceDesc += ` Existing path is cheaper. No update.`;
+                        }
+
+                        this.trace.push({
+                            graphState: stepState,
+                            lineIdx: line,
+                            description: traceDesc,
+                            structures: { g_score: {...gScore}, f_score: {...fScore}, open_set: Array.from(openSet) }
+                        });
+                    }
+                }
+
+                this.trace.push({
+                    graphState: this.cloneGraphState(),
+                    lineIdx: 4,
+                    description: `Open set empty. No path found from ${startId} to ${targetId}.`,
+                    structures: { g_score: {...gScore} }
+                });
+            },
+
+            runBFS(startId, targetId, adj) {
+                const visited = new Set();
+                const queue = [startId];
+                const parents = {};
+
+                visited.add(startId);
+
+                let state = this.cloneGraphState();
+                state.nodes.find(n => n.id === startId).color = this.colors.visiting;
+                this.trace.push({
+                    graphState: state,
+                    lineIdx: 2,
+                    description: `Push start node ${startId} into Queue and mark as visited.`,
+                    structures: { queue: [...queue], visited: Array.from(visited) }
+                });
+
+                while (queue.length > 0) {
+                    const u = queue.shift();
+                    
+                    let state = this.cloneGraphState();
+                    visited.forEach(vid => {
+                        const n = state.nodes.find(node => node.id === vid);
+                        if (n) n.color = this.colors.visited;
+                    });
+                    state.nodes.find(n => n.id === u).color = this.colors.visiting;
+
+                    this.trace.push({
+                        graphState: state,
+                        lineIdx: 4,
+                        description: `Dequeue node ${u}.`,
+                        structures: { queue: [...queue], visited: Array.from(visited) }
+                    });
+
+                    if (u === targetId) {
+                        let path = [];
+                        let curr = targetId;
+                        while (curr) {
+                            path.push(curr);
+                            curr = parents[curr];
+                        }
+                        path.reverse();
+
+                        let finalState = this.cloneGraphState();
+                        visited.forEach(vid => {
+                            const n = finalState.nodes.find(node => node.id === vid);
+                            if (n) n.color = this.colors.visited;
+                        });
+                        path.forEach(nodeId => {
+                            finalState.nodes.find(n => n.id === nodeId).color = this.colors.finished;
+                        });
+
+                        this.trace.push({
+                            graphState: finalState,
+                            lineIdx: 5,
+                            description: `Target node ${targetId} located. Reconstruction path: ${path.join(' → ')}`,
+                            structures: { path: path }
+                        });
+                        return;
+                    }
+
+                    const neighbors = adj[u] || [];
+                    for (let edgeObj of neighbors) {
+                        const v = edgeObj.target;
+                        if (!visited.has(v)) {
+                            visited.add(v);
+                            parents[v] = u;
+                            queue.push(v);
+
+                            let stepState = this.cloneGraphState();
+                            visited.forEach(vid => {
+                                const n = stepState.nodes.find(node => node.id === vid);
+                                if (n) n.color = this.colors.visited;
+                            });
+                            stepState.nodes.find(n => n.id === u).color = this.colors.visiting;
+                            stepState.nodes.find(n => n.id === v).color = this.colors.frontier;
+
+                            this.trace.push({
+                                graphState: stepState,
+                                lineIdx: 7,
+                                description: `Discover unvisited neighbor ${v} from ${u}. Enqueue and mark visited.`,
+                                structures: { queue: [...queue], visited: Array.from(visited) }
+                            });
+                        }
+                    }
+                }
+
+                this.trace.push({
+                    graphState: this.cloneGraphState(),
+                    lineIdx: 4,
+                    description: `Queue empty. Search finished, target node not reached.`,
+                    structures: { visited: Array.from(visited) }
+                });
+            },
+
+            runDFS(startId, targetId, adj) {
+                const visited = new Set();
+                const stack = [startId];
+                const parents = {};
+
+                let state = this.cloneGraphState();
+                state.nodes.find(n => n.id === startId).color = this.colors.frontier;
+                this.trace.push({
+                    graphState: state,
+                    lineIdx: 1,
+                    description: `Push start node ${startId} into stack.`,
+                    structures: { stack: [...stack], visited: [] }
+                });
+
+                while (stack.length > 0) {
+                    const u = stack.pop();
+
+                    if (visited.has(u)) continue;
+                    visited.add(u);
+
+                    let state = this.cloneGraphState();
+                    visited.forEach(vid => {
+                        const n = state.nodes.find(node => node.id === vid);
+                        if (n) n.color = this.colors.visited;
+                    });
+                    state.nodes.find(n => n.id === u).color = this.colors.visiting;
+
+                    this.trace.push({
+                        graphState: state,
+                        lineIdx: 4,
+                        description: `Pop node ${u} from Stack and mark as visited.`,
+                        structures: { stack: [...stack], visited: Array.from(visited) }
+                    });
+
+                    if (u === targetId) {
+                        let path = [];
+                        let curr = targetId;
+                        while (curr) {
+                            path.push(curr);
+                            curr = parents[curr];
+                        }
+                        path.reverse();
+
+                        let finalState = this.cloneGraphState();
+                        visited.forEach(vid => {
+                            const n = finalState.nodes.find(node => node.id === vid);
+                            if (n) n.color = this.colors.visited;
+                        });
+                        path.forEach(nodeId => {
+                            finalState.nodes.find(n => n.id === nodeId).color = this.colors.finished;
+                        });
+
+                        this.trace.push({
+                            graphState: finalState,
+                            lineIdx: 6,
+                            description: `Target node ${targetId} located. Reconstruction path: ${path.join(' → ')}`,
+                            structures: { path: path }
+                        });
+                        return;
+                    }
+
+                    const neighbors = adj[u] || [];
+                    // Push neighbors in reverse to visit left-to-right
+                    for (let i = neighbors.length - 1; i >= 0; i--) {
+                        const v = neighbors[i].target;
+                        if (!visited.has(v)) {
+                            parents[v] = u;
+                            stack.push(v);
+
+                            let stepState = this.cloneGraphState();
+                            visited.forEach(vid => {
+                                const n = stepState.nodes.find(node => node.id === vid);
+                                if (n) n.color = this.colors.visited;
+                            });
+                            stepState.nodes.find(n => n.id === u).color = this.colors.visiting;
+                            stepState.nodes.find(n => n.id === v).color = this.colors.frontier;
+
+                            this.trace.push({
+                                graphState: stepState,
+                                lineIdx: 8,
+                                description: `Push unvisited neighbor ${v} into Stack. Set parent[${v}] = ${u}.`,
+                                structures: { stack: [...stack], visited: Array.from(visited) }
+                            });
+                        }
+                    }
+                }
+            },
+
+            runKruskal(adj) {
+                // Initialize disjoint sets
+                const parent = {};
+                const rank = {};
+                const makeSet = (id) => {
+                    parent[id] = id;
+                    rank[id] = 0;
+                };
+                const find = (id) => {
+                    if (parent[id] !== id) {
+                        parent[id] = find(parent[id]); // Path compression
+                    }
+                    return parent[id];
+                };
+                const union = (id1, id2) => {
+                    const root1 = find(id1);
+                    const root2 = find(id2);
+                    if (root1 !== root2) {
+                        if (rank[root1] > rank[root2]) parent[root2] = root1;
+                        else if (rank[root1] < rank[root2]) parent[root1] = root2;
+                        else {
+                            parent[root2] = root1;
+                            rank[root1]++;
+                        }
+                        return true;
+                    }
+                    return false;
+                };
+
+                Graph.nodes.forEach(n => makeSet(n.id));
+
+                // Get all distinct edges sorted by weight
+                let edgeList = [];
+                const seenEdges = new Set();
+                Graph.edges.forEach(e => {
+                    const key1 = `${e.source}-${e.target}`;
+                    const key2 = `${e.target}-${e.source}`;
+                    if (!seenEdges.has(key1) && !seenEdges.has(key2)) {
+                        edgeList.push({...e});
+                        seenEdges.add(key1);
+                    }
+                });
+                edgeList.sort((a,b) => a.weight - b.weight);
+
+                let state = this.cloneGraphState();
+                this.trace.push({
+                    graphState: state,
+                    lineIdx: 0,
+                    description: `Sort all ${edgeList.length} edges in ascending order of weights. Initialized disjoint sets for all nodes.`,
+                    structures: { sorted_edges: edgeList.map(e => `${e.source}-${e.target}(${e.weight})`), disjoint_sets: {...parent} }
+                });
+
+                const mstEdges = [];
+                for (let e of edgeList) {
+                    const u = e.source;
+                    const v = e.target;
+
+                    let stepState = this.cloneGraphState();
+                    // Set colours for already picked MST edges
+                    mstEdges.forEach(mstEdge => {
+                        const match = stepState.edges.find(se => 
+                            (se.source === mstEdge.source && se.target === mstEdge.target) ||
+                            (!Graph.isDirected && se.source === mstEdge.target && se.target === mstEdge.source)
+                        );
+                        if (match) match.color = this.colors.finished;
+                    });
+
+                    // Highlight currently evaluating edge
+                    const curEdge = stepState.edges.find(se => 
+                        (se.source === u && se.target === v) ||
+                        (!Graph.isDirected && se.source === v && se.target === u)
+                    );
+                    if (curEdge) curEdge.color = this.colors.highlight;
+
+                    const rootU = find(u);
+                    const rootV = find(v);
+
+                    if (rootU !== rootV) {
+                        union(u, v);
+                        mstEdges.push(e);
+                        
+                        let unionState = this.cloneGraphState();
+                        mstEdges.forEach(mstEdge => {
+                            const match = unionState.edges.find(se => 
+                                (se.source === mstEdge.source && se.target === mstEdge.target) ||
+                                (!Graph.isDirected && se.source === mstEdge.target && se.target === mstEdge.source)
+                            );
+                            if (match) match.color = this.colors.finished;
+                        });
+                        unionState.nodes.find(n => n.id === u).color = this.colors.finished;
+                        unionState.nodes.find(n => n.id === v).color = this.colors.finished;
+
+                        this.trace.push({
+                            graphState: unionState,
+                            lineIdx: 4,
+                            description: `Edge (${u}, ${v}) with weight ${e.weight} does not create a cycle. Union parent sets and add to MST.`,
+                            structures: { mst: mstEdges.map(me => `${me.source}-${me.target}`), disjoint_sets: {...parent} }
+                        });
+                    } else {
+                        this.trace.push({
+                            graphState: stepState,
+                            lineIdx: 3,
+                            description: `Edge (${u}, ${v}) connects nodes in the same tree set. Skipping to prevent a cycle.`,
+                            structures: { mst: mstEdges.map(me => `${me.source}-${me.target}`), disjoint_sets: {...parent} }
+                        });
+                    }
+
+                    if (mstEdges.length === Graph.nodes.length - 1) {
+                        break;
+                    }
+                }
+
+                // Final complete step
+                let finalState = this.cloneGraphState();
+                mstEdges.forEach(mstEdge => {
+                    const match = finalState.edges.find(se => 
+                        (se.source === mstEdge.source && se.target === mstEdge.target) ||
+                        (!Graph.isDirected && se.source === mstEdge.target && se.target === mstEdge.source)
+                    );
+                    if (match) match.color = this.colors.finished;
+                });
+                finalState.nodes.forEach(n => n.color = this.colors.finished);
+
+                this.trace.push({
+                    graphState: finalState,
+                    lineIdx: 7,
+                    description: `Minimum Spanning Tree construction complete. Total MST edges: ${mstEdges.length}.`,
+                    structures: { mst: mstEdges.map(me => `${me.source}-${me.target}`) }
+                });
+            },
+
+            runPrim(startId, adj) {
+                const visited = new Set();
+                const pq = []; // Array of edges {u, v, weight}
+                const mstEdges = [];
+
+                visited.add(startId);
+
+                // Prime the priority queue with edges from the start node
+                (adj[startId] || []).forEach(e => {
+                    pq.push({ u: startId, v: e.target, weight: e.weight });
+                });
+
+                let state = this.cloneGraphState();
+                state.nodes.find(n => n.id === startId).color = this.colors.visiting;
+                this.trace.push({
+                    graphState: state,
+                    lineIdx: 1,
+                    description: `Start with node ${startId}. Queue initial outgoing edges.`,
+                    structures: { visited: Array.from(visited), priority_queue: pq.map(x => `${x.u}-${x.v}(${x.weight})`) }
+                });
+
+                while (pq.length > 0 && visited.size < Graph.nodes.length) {
+                    pq.sort((a,b) => a.weight - b.weight);
+                    const edge = pq.shift();
+
+                    if (visited.has(edge.v)) continue;
+
+                    // Add edge to MST
+                    visited.add(edge.v);
+                    mstEdges.push(edge);
+
+                    let stepState = this.cloneGraphState();
+                    visited.forEach(vid => {
+                        stepState.nodes.find(n => n.id === vid).color = this.colors.finished;
+                    });
+                    mstEdges.forEach(mstEdge => {
+                        const match = stepState.edges.find(se => 
+                            (se.source === mstEdge.u && se.target === mstEdge.v) ||
+                            (!Graph.isDirected && se.source === mstEdge.v && se.target === mstEdge.u)
+                        );
+                        if (match) match.color = this.colors.finished;
+                    });
+
+                    // Add new neighbor edges of the newly added node v
+                    (adj[edge.v] || []).forEach(e => {
+                        if (!visited.has(e.target)) {
+                            pq.push({ u: edge.v, v: e.target, weight: e.weight });
+                        }
+                    });
+
+                    this.trace.push({
+                        graphState: stepState,
+                        lineIdx: 5,
+                        description: `Select edge (${edge.u}, ${edge.v}) with min weight ${edge.weight}. Mark ${edge.v} as visited. Add outgoing edges.`,
+                        structures: { visited: Array.from(visited), priority_queue: pq.map(x => `${x.u}-${x.v}(${x.weight})`), mst: mstEdges.map(me => `${me.u}-${me.v}`) }
+                    });
+                }
+
+                // Final step
+                let finalState = this.cloneGraphState();
+                finalState.nodes.forEach(n => n.color = this.colors.finished);
+                mstEdges.forEach(mstEdge => {
+                    const match = finalState.edges.find(se => 
+                        (se.source === mstEdge.u && se.target === mstEdge.v) ||
+                        (!Graph.isDirected && se.source === mstEdge.v && se.target === mstEdge.u)
+                    );
+                    if (match) match.color = this.colors.finished;
+                });
+
+                this.trace.push({
+                    graphState: finalState,
+                    lineIdx: 8,
+                    description: `Prim's Minimum Spanning Tree complete. Total Cost: ${mstEdges.reduce((acc, e) => acc + e.weight, 0)}`,
+                    structures: { mst: mstEdges.map(me => `${me.u}-${me.v}`) }
+                });
+            },
+
+            runBellmanFord(startId, adj) {
+                const distances = {};
+                const parents = {};
+                const numNodes = Graph.nodes.length;
+                
+                Graph.nodes.forEach(n => distances[n.id] = Infinity);
+                distances[startId] = 0;
+
+                let state = this.cloneGraphState();
+                state.nodes.find(n => n.id === startId).color = this.colors.visiting;
+                this.trace.push({
+                    graphState: state,
+                    lineIdx: 0,
+                    description: `Initialize distances. Set distance to Start Node (${startId}) to 0, all others to ∞.`,
+                    structures: { distances: {...distances} }
+                });
+
+                let updated = false;
+                // Relax edges |V| - 1 times
+                for (let i = 1; i <= numNodes - 1; i++) {
+                    updated = false;
+                    for (let e of Graph.edges) {
+                        const u = e.source;
+                        const v = e.target;
+                        const w = e.weight;
+
+                        // Check relaxation
+                        if (distances[u] !== Infinity && distances[u] + w < distances[v]) {
+                            distances[v] = distances[u] + w;
+                            parents[v] = u;
+                            updated = true;
+
+                            let stepState = this.cloneGraphState();
+                            stepState.nodes.find(n => n.id === u).color = this.colors.visiting;
+                            stepState.nodes.find(n => n.id === v).color = this.colors.frontier;
+                            const curEdge = stepState.edges.find(se => se.source === u && se.target === v);
+                            if (curEdge) curEdge.color = this.colors.highlight;
+
+                            this.trace.push({
+                                graphState: stepState,
+                                lineIdx: 3,
+                                description: `Relaxation Iteration ${i}: Path to ${v} through ${u} is shorter. Set dist[${v}] = ${distances[v]}`,
+                                structures: { distances: {...distances} }
+                            });
+                        }
+                    }
+                    if (!updated) break; // Optimization if no changes occur
+                }
+
+                // Check for negative cycles
+                for (let e of Graph.edges) {
+                    const u = e.source;
+                    const v = e.target;
+                    const w = e.weight;
+
+                    if (distances[u] !== Infinity && distances[u] + w < distances[v]) {
+                        let errorState = this.cloneGraphState();
+                        const badEdge = errorState.edges.find(se => se.source === u && se.target === v);
+                        if (badEdge) badEdge.color = this.colors.highlight;
+                        errorState.nodes.find(n => n.id === u).color = this.colors.highlight;
+                        errorState.nodes.find(n => n.id === v).color = this.colors.highlight;
+
+                        this.trace.push({
+                            graphState: errorState,
+                            lineIdx: 7,
+                            description: `ERROR: Negative weight cycle detected at edge (${u}, ${v})! Infinite decreasing loops possible.`,
+                            structures: { distances: {...distances}, cycle_edge: `${u} -> ${v}` }
+                        });
+                        return;
+                    }
+                }
+
+                // Path construction
+                let finalState = this.cloneGraphState();
+                finalState.nodes.forEach(n => {
+                    if (distances[n.id] !== Infinity) n.color = this.colors.finished;
+                });
+
+                this.trace.push({
+                    graphState: finalState,
+                    lineIdx: 8,
+                    description: `Bellman-Ford algorithm completed successfully. No negative cycles detected.`,
+                    structures: { distances: {...distances} }
+                });
+            },
+
+            runTSP(startId, adj) {
+                // Approximate TSP using nearest neighbor greedy search
+                const visited = new Set([startId]);
+                const path = [startId];
+                let current = startId;
+                let totalCost = 0;
+
+                let state = this.cloneGraphState();
+                state.nodes.find(n => n.id === startId).color = this.colors.visiting;
+                this.trace.push({
+                    graphState: state,
+                    lineIdx: 1,
+                    description: `TSP Tour starting at node ${startId}. Mark as visited.`,
+                    structures: { current_node: current, tour: [...path], total_cost: totalCost }
+                });
+
+                while (visited.size < Graph.nodes.length) {
+                    // Find closest unvisited neighbor
+                    let nearest = null;
+                    let minDist = Infinity;
+                    let targetEdge = null;
+
+                    // Since it's TSP, we look at all nodes to allow complete graph traversal
+                    Graph.nodes.forEach(n => {
+                        if (!visited.has(n.id)) {
+                            // Find actual edge weight in graph or compute geometric distance if no edge
+                            const edge = Graph.edges.find(e => 
+                                (e.source === current && e.target === n.id) ||
+                                (!Graph.isDirected && e.source === n.id && e.target === current)
+                            );
+                            let dist = Infinity;
+                            if (edge) {
+                                dist = edge.weight;
+                            } else {
+                                // Geometric distance as fallback
+                                const cNode = Graph.nodes.find(node => node.id === current);
+                                const dx = cNode.x - n.x;
+                                const dy = cNode.y - n.y;
+                                dist = Math.round(Math.sqrt(dx*dx + dy*dy) / 10); // scale factor
+                            }
+
+                            if (dist < minDist) {
+                                minDist = dist;
+                                nearest = n.id;
+                                targetEdge = edge;
+                            }
+                        }
+                    });
+
+                    if (nearest === null) break; // Dead end
+
+                    visited.add(nearest);
+                    path.push(nearest);
+                    totalCost += minDist;
+                    current = nearest;
+
+                    let stepState = this.cloneGraphState();
+                    path.forEach(nid => {
+                        stepState.nodes.find(n => n.id === nid).color = this.colors.visiting;
+                    });
+                    if (targetEdge) {
+                        const match = stepState.edges.find(se => 
+                            (se.source === targetEdge.source && se.target === targetEdge.target) ||
+                            (!Graph.isDirected && se.source === targetEdge.target && se.target === targetEdge.source)
+                        );
+                        if (match) match.color = this.colors.highlight;
+                    }
+
+                    this.trace.push({
+                        graphState: stepState,
+                        lineIdx: 4,
+                        description: `Visit nearest node ${nearest} (distance: ${minDist}). Cumulative Cost: ${totalCost}`,
+                        structures: { current_node: current, tour: [...path], total_cost: totalCost }
+                    });
+                }
+
+                // Close the loop back to start
+                const edgeBack = Graph.edges.find(e => 
+                    (e.source === current && e.target === startId) ||
+                    (!Graph.isDirected && e.source === startId && e.target === current)
+                );
+                let finalCost = Infinity;
+                if (edgeBack) {
+                    finalCost = edgeBack.weight;
+                } else {
+                    const cNode = Graph.nodes.find(node => node.id === current);
+                    const sNode = Graph.nodes.find(node => node.id === startId);
+                    const dx = cNode.x - sNode.x;
+                    const dy = cNode.y - sNode.y;
+                    finalCost = Math.round(Math.sqrt(dx*dx + dy*dy) / 10);
+                }
+
+                path.push(startId);
+                totalCost += finalCost;
+
+                let finalState = this.cloneGraphState();
+                path.forEach(nid => {
+                    finalState.nodes.find(n => n.id === nid).color = this.colors.finished;
+                });
+
+                // Highlight all path links
+                for(let i=0; i<path.length-1; i++) {
+                    const e = finalState.edges.find(edge => 
+                        (edge.source === path[i] && edge.target === path[i+1]) ||
+                        (!Graph.isDirected && edge.source === path[i+1] && edge.target === path[i])
+                    );
+                    if (e) e.color = this.colors.finished;
+                }
+
+                this.trace.push({
+                    graphState: finalState,
+                    lineIdx: 7,
+                    description: `Complete the TSP cycle by returning to start node ${startId}. Final Tour: ${path.join(' → ')}. Total Cost: ${totalCost}`,
+                    structures: { tour: path, total_cost: totalCost }
+                });
+            },
+
+            // Playback controls implementation
+            initPlayback() {
+                updateSelectors();
+                this.loadPseudocode(document.getElementById('select-algorithm').value);
+                
+                document.getElementById('select-algorithm').addEventListener('change', (e) => {
+                    this.loadPseudocode(e.target.value);
+                    this.stop();
+                });
+                
+                document.getElementById('btn-alg-play').addEventListener('click', () => {
+                    if (this.isPlaying) {
+                        this.pause();
+                    } else {
+                        this.play();
+                    }
+                });
+
+                document.getElementById('btn-alg-prev').addEventListener('click', () => {
+                    this.prevStep();
+                });
+
+                document.getElementById('btn-alg-next').addEventListener('click', () => {
+                    this.nextStep();
+                });
+
+                document.getElementById('btn-alg-stop').addEventListener('click', () => {
+                    this.stop();
+                });
+
+                document.getElementById('slider-speed').addEventListener('input', (e) => {
+                    this.speed = parseInt(e.target.value);
+                    document.getElementById('label-speed').textContent = `${this.speed}ms`;
+                    if (this.isPlaying) {
+                        this.pause();
+                        this.play();
+                    }
+                });
+
+                document.getElementById('slider-timeline').addEventListener('input', (e) => {
+                    this.currentStep = parseInt(e.target.value);
+                    this.renderStep();
+                });
+            },
+
+            play() {
+                if (this.trace.length === 0) {
+                    const alg = document.getElementById('select-algorithm').value;
+                    const startId = document.getElementById('select-start-node').value;
+                    const targetId = document.getElementById('select-target-node').value;
+                    this.generateTrace(alg, startId, targetId);
+                }
+                
+                if (this.trace.length === 0) return;
+                
+                this.isPlaying = true;
+                document.getElementById('btn-alg-play').innerHTML = `
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25v13.5m-7.5-13.5v13.5"/>
+                    </svg>
+                    Pause
+                `;
+                
+                this.intervalId = setInterval(() => {
+                    if (this.currentStep < this.trace.length - 1) {
+                        this.nextStep();
+                    } else {
+                        this.pause();
+                    }
+                }, this.speed);
+            },
+
+            pause() {
+                this.isPlaying = false;
+                document.getElementById('btn-alg-play').innerHTML = `
+                    <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                        <path d="M8 5v14l11-7z"/>
+                    </svg>
+                    Play
+                `;
+                if (this.intervalId) {
+                    clearInterval(this.intervalId);
+                    this.intervalId = null;
+                }
+            },
+
+            stop() {
+                this.pause();
+                this.currentStep = 0;
+                this.trace = [];
+                CanvasEngine.activeGraphState = null;
+                
+                document.getElementById('slider-timeline').value = 0;
+                document.getElementById('slider-timeline').max = 0;
+                document.getElementById('slider-timeline').disabled = true;
+                document.getElementById('label-timeline').textContent = "0 / 0";
+                document.getElementById('state-description').textContent = "Algorithm not running. Press Play or Step Forward to begin.";
+                document.getElementById('state-data-structures').innerHTML = `<div class="text-zinc-600 font-mono text-[10px]">No active data structures.</div>`;
+                
+                const pseudocodeContainer = document.getElementById('pseudocode-container');
+                const active = pseudocodeContainer.querySelector('.bg-accentIndigo\\/20');
+                if (active) active.classList.remove('bg-accentIndigo/20', 'text-white', 'border-l-2', 'border-accentIndigo');
+                
+                CanvasEngine.draw();
+            },
+
+            nextStep() {
+                if (this.trace.length === 0) {
+                    const alg = document.getElementById('select-algorithm').value;
+                    const startId = document.getElementById('select-start-node').value;
+                    const targetId = document.getElementById('select-target-node').value;
+                    this.generateTrace(alg, startId, targetId);
+                }
+                
+                if (this.trace.length === 0) return;
+
+                if (this.currentStep < this.trace.length - 1) {
+                    this.currentStep++;
+                    this.renderStep();
+                }
+            },
+
+            prevStep() {
+                if (this.trace.length === 0 || this.currentStep === 0) return;
+                this.currentStep--;
+                this.renderStep();
+            },
+
+            renderStep() {
+                if (this.trace.length === 0) return;
+                const step = this.trace[this.currentStep];
+                
+                const slider = document.getElementById('slider-timeline');
+                slider.disabled = false;
+                slider.max = this.trace.length - 1;
+                slider.value = this.currentStep;
+                
+                document.getElementById('label-timeline').textContent = `${this.currentStep + 1} / ${this.trace.length}`;
+                
+                CanvasEngine.activeGraphState = step.graphState;
+                CanvasEngine.draw();
+                
+                this.highlightLine(step.lineIdx);
+                
+                document.getElementById('state-description').textContent = step.description;
+                
+                const dsContainer = document.getElementById('state-data-structures');
+                dsContainer.innerHTML = "";
+                
+                if (step.structures) {
+                    Object.entries(step.structures).forEach(([key, val]) => {
+                        const div = document.createElement('div');
+                        div.className = "flex flex-col gap-1 border-b border-themeBorder/40 pb-2";
+                        
+                        let valStr = "";
+                        if (typeof val === 'object') {
+                            valStr = Object.entries(val)
+                                .map(([k, v]) => `${k}: ${v === Infinity ? '∞' : v}`)
+                                .join(', ');
+                        } else {
+                            valStr = val.toString();
+                        }
+                        
+                        div.innerHTML = `
+                            <span class="text-[10px] font-bold text-accentCyan uppercase font-mono tracking-wider">${key}</span>
+                            <span class="font-mono text-xs text-zinc-300">${valStr}</span>
+                        `;
+                        dsContainer.appendChild(div);
+                    });
+                }
+                
+                document.getElementById('btn-alg-prev').disabled = (this.currentStep === 0);
+                document.getElementById('btn-alg-next').disabled = (this.currentStep === this.trace.length - 1);
+            }
+        };
+
+        // Bootstrap App
+        CanvasEngine.init('graph-canvas', 'canvas-parent');
+
+        if (!Graph.loadFromStorage()) {
+            Graph.addNode('A', 200, 150);
+            Graph.addNode('B', 400, 150);
+            Graph.addNode('C', 200, 350);
+            Graph.addNode('D', 400, 350);
+            Graph.addNode('E', 550, 250);
+            Graph.addEdge('A', 'B', 4);
+            Graph.addEdge('A', 'C', 2);
+            Graph.addEdge('B', 'C', 1);
+            Graph.addEdge('B', 'D', 5);
+            Graph.addEdge('C', 'D', 8);
+            Graph.addEdge('C', 'E', 10);
+            Graph.addEdge('D', 'E', 2);
+            Graph.saveToStorage();
+        }
+
+        updateSelectors();
+        syncMatrixUI();
+        CanvasEngine.draw();
+        AlgEngine.initPlayback();
+
+        // Preset Topology Configuration
+        const presets = {
+            'default': [
+                { type: 'node', id: 'A', x: 200, y: 150 },
+                { type: 'node', id: 'B', x: 400, y: 150 },
+                { type: 'node', id: 'C', x: 200, y: 350 },
+                { type: 'node', id: 'D', x: 400, y: 350 },
+                { type: 'node', id: 'E', x: 550, y: 250 },
+                { type: 'edge', src: 'A', dst: 'B', w: 4 },
+                { type: 'edge', src: 'A', dst: 'C', w: 2 },
+                { type: 'edge', src: 'B', dst: 'C', w: 1 },
+                { type: 'edge', src: 'B', dst: 'D', w: 5 },
+                { type: 'edge', src: 'C', dst: 'D', w: 8 },
+                { type: 'edge', src: 'C', dst: 'E', w: 10 },
+                { type: 'edge', src: 'D', dst: 'E', w: 2 }
+            ],
+            'negative_cycle': [
+                { type: 'node', id: 'A', x: 200, y: 250 },
+                { type: 'node', id: 'B', x: 350, y: 150 },
+                { type: 'node', id: 'C', x: 350, y: 350 },
+                { type: 'node', id: 'D', x: 500, y: 250 },
+                { type: 'edge', src: 'A', dst: 'B', w: 3 },
+                { type: 'edge', src: 'A', dst: 'C', w: 5 },
+                { type: 'edge', src: 'B', dst: 'C', w: -2 },
+                { type: 'edge', src: 'C', dst: 'B', w: -1 },
+                { type: 'edge', src: 'B', dst: 'D', w: 2 },
+                { type: 'edge', src: 'C', dst: 'D', w: 6 }
+            ],
+            'complete': [
+                { type: 'node', id: 'A', x: 375, y: 120 },
+                { type: 'node', id: 'B', x: 500, y: 220 },
+                { type: 'node', id: 'C', x: 450, y: 380 },
+                { type: 'node', id: 'D', x: 300, y: 380 },
+                { type: 'node', id: 'E', x: 250, y: 220 },
+                { type: 'edge', src: 'A', dst: 'B', w: 2 },
+                { type: 'edge', src: 'A', dst: 'C', w: 5 },
+                { type: 'edge', src: 'A', dst: 'D', w: 4 },
+                { type: 'edge', src: 'A', dst: 'E', w: 3 },
+                { type: 'edge', src: 'B', dst: 'C', w: 1 },
+                { type: 'edge', src: 'B', dst: 'D', w: 7 },
+                { type: 'edge', src: 'B', dst: 'E', w: 6 },
+                { type: 'edge', src: 'C', dst: 'D', w: 3 },
+                { type: 'edge', src: 'C', dst: 'E', w: 8 },
+                { type: 'edge', src: 'D', dst: 'E', w: 4 }
+            ],
+            'grid': [
+                { type: 'node', id: 'A', x: 250, y: 150 },
+                { type: 'node', id: 'B', x: 450, y: 150 },
+                { type: 'node', id: 'C', x: 250, y: 350 },
+                { type: 'node', id: 'D', x: 450, y: 350 },
+                { type: 'edge', src: 'A', dst: 'B', w: 2 },
+                { type: 'edge', src: 'A', dst: 'C', w: 4 },
+                { type: 'edge', src: 'B', dst: 'D', w: 3 },
+                { type: 'edge', src: 'C', dst: 'D', w: 1 }
+            ],
+            'mst_demo': [
+                { type: 'node', id: 'A', x: 200, y: 250 },
+                { type: 'node', id: 'B', x: 300, y: 150 },
+                { type: 'node', id: 'C', x: 300, y: 350 },
+                { type: 'node', id: 'D', x: 450, y: 150 },
+                { type: 'node', id: 'E', x: 450, y: 350 },
+                { type: 'node', id: 'F', x: 550, y: 250 },
+                { type: 'edge', src: 'A', dst: 'B', w: 2 },
+                { type: 'edge', src: 'A', dst: 'C', w: 4 },
+                { type: 'edge', src: 'B', dst: 'C', w: 1 },
+                { type: 'edge', src: 'B', dst: 'D', w: 7 },
+                { type: 'edge', src: 'C', dst: 'D', w: 3 },
+                { type: 'edge', src: 'C', dst: 'E', w: 5 },
+                { type: 'edge', src: 'D', dst: 'E', w: 2 },
+                { type: 'edge', src: 'D', dst: 'F', w: 8 },
+                { type: 'edge', src: 'E', dst: 'F', w: 4 }
+            ],
+            'tsp_demo': [
+                { type: 'node', id: 'A', x: 200, y: 150 },
+                { type: 'node', id: 'B', x: 450, y: 150 },
+                { type: 'node', id: 'C', x: 500, y: 350 },
+                { type: 'node', id: 'D', x: 250, y: 350 },
+                { type: 'node', id: 'E', x: 350, y: 250 },
+                { type: 'edge', src: 'A', dst: 'B', w: 12 },
+                { type: 'edge', src: 'B', dst: 'C', w: 8 },
+                { type: 'edge', src: 'C', dst: 'D', w: 15 },
+                { type: 'edge', src: 'D', dst: 'A', w: 9 },
+                { type: 'edge', src: 'A', dst: 'E', w: 6 },
+                { type: 'edge', src: 'B', dst: 'E', w: 7 },
+                { type: 'edge', src: 'C', dst: 'E', w: 5 },
+                { type: 'edge', src: 'D', dst: 'E', w: 4 }
+            ],
+            'empty': []
+        };
+
+        document.getElementById('select-preset').addEventListener('change', (e) => {
+            const key = e.target.value;
+            const preset = presets[key];
+            if (!preset) return;
+            
+            Graph.clear();
+            preset.forEach(item => {
+                if (item.type === 'node') {
+                    Graph.addNode(item.id, item.x, item.y);
+                } else if (item.type === 'edge') {
+                    Graph.addEdge(item.src, item.dst, item.w, Graph.isDirected);
+                }
+            });
+            Graph.saveToStorage();
+            updateSelectors();
+            syncMatrixUI();
+            CanvasEngine.draw();
+            AlgEngine.stop();
+        });
+        };
+
+    </script>
+</body>
+</html>
