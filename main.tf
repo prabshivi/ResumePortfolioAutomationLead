@@ -29,6 +29,19 @@ variable "domain_name" {
   description = "Your custom domain name (e.g. shiviprabhakar.com)"
 }
 
+variable "allowed_regions" {
+  type        = list(string)
+  default     = [
+    # India
+    "IN",
+    # North America
+    "US", "CA", "MX", "GL", "BM",
+    # Europe
+    "GB", "FR", "DE", "IT", "ES", "NL", "BE", "CH", "SE", "NO", "FI", "DK", "IE", "PL", "AT", "GR", "PT", "CZ", "HU", "RO", "BG", "HR", "SK", "SI", "LT", "LV", "EE", "LU", "IS", "LI", "MT", "CY", "AL", "BA", "GE", "MD", "ME", "MK", "RS", "TR", "UA", "AD", "MC", "SM", "VA", "GI"
+  ]
+  description = "List of ISO 3166-1 alpha-2 country codes allowed to access the site (Europe, India, North America)"
+}
+
 # 1. Google Cloud Storage Bucket for website hosting
 resource "google_storage_bucket" "website_bucket" {
   name          = var.domain_name
@@ -57,9 +70,10 @@ resource "google_storage_bucket_iam_member" "public_rule" {
 
 # 3. Backend Bucket for Load Balancing + Cloud CDN
 resource "google_compute_backend_bucket" "website_backend" {
-  name        = "${replace(var.domain_name, ".", "-")}-backend-bucket"
-  bucket_name = google_storage_bucket.website_bucket.name
-  enable_cdn  = true
+  name                 = "${replace(var.domain_name, ".", "-")}-backend-bucket"
+  bucket_name          = google_storage_bucket.website_bucket.name
+  enable_cdn           = true
+  edge_security_policy = google_compute_security_policy.edge_geo_policy.id
 
   cdn_policy {
     cache_mode        = "CACHE_ALL_STATIC"
@@ -128,6 +142,38 @@ resource "google_compute_global_forwarding_rule" "http_forwarding_rule" {
   port_range            = "80"
   ip_address            = google_compute_global_address.lb_ip.address
   load_balancing_scheme = "EXTERNAL"
+}
+
+# 11. Cloud Armor Edge Geolocation Security Policy
+resource "google_compute_security_policy" "edge_geo_policy" {
+  name        = "${replace(var.domain_name, ".", "-")}-edge-geo-policy"
+  description = "Edge security policy for geo-blocking specific countries"
+  type        = "CLOUD_ARMOR_EDGE"
+
+  # Rule to allow access only to specified countries
+  rule {
+    action      = "allow"
+    priority    = "1000"
+    match {
+      expr {
+        expression = "['${join("', '", var.allowed_regions)}'].contains(origin.region_code)"
+      }
+    }
+    description = "Allow traffic only from Europe, India, and North America"
+  }
+
+  # Default rule to deny all other traffic
+  rule {
+    action   = "deny(403)"
+    priority = "2147483647"
+    match {
+      versioned_expr = "SRC_IPS_V1"
+      config {
+        src_ip_ranges = ["*"]
+      }
+    }
+    description = "Default rule - deny all other traffic"
+  }
 }
 
 # Outputs
