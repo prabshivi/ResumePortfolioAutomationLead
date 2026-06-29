@@ -459,7 +459,7 @@ if (emailCard) {
 // 6. Connect Section Vercel Analytics Triggers
 // -------------------------------------------------------------
 // Track LinkedIn Profile clicks (navbar and connect section)
-const linkedinLinks = document.querySelectorAll('a[href*="linkedin.com/in/shivi-prabhakar"]');
+const linkedinLinks = document.querySelectorAll('a[href*="linkedin.com/in/shivi-prabhakar-60565851"]');
 linkedinLinks.forEach(link => {
     link.addEventListener("click", () => {
         if (window.va) {
